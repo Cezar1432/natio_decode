@@ -79,8 +79,8 @@ public class PedroConstants {
                 new PIDFCoefficients(kP, 0, kD, kFFront), DcMotorSimple.Direction.REVERSE,
                 DcMotorSimple.Direction.REVERSE, Math.toRadians(0), new Pose(dtLength, dtWidth),
                 0, 3.3, false);
-        pod.setMotorCachingThreshold(0.05);
-        pod.setServoCachingThreshold(0.05);
+        pod.setMotorCachingThreshold(0.2);
+        pod.setServoCachingThreshold(0.2);
         return pod;
     }
 
@@ -89,8 +89,8 @@ public class PedroConstants {
                 new PIDFCoefficients(kP, 0, kD, kFFront), DcMotorSimple.Direction.FORWARD,
                 DcMotorSimple.Direction.REVERSE, Math.toRadians(0), new Pose(dtLength, -dtWidth),
                 0.0, 3.3, false);
-        pod.setMotorCachingThreshold(0.05);
-        pod.setServoCachingThreshold(0.05);
+        pod.setMotorCachingThreshold(0.01);
+        pod.setServoCachingThreshold(0.01);
         return pod;
     }
 
@@ -99,8 +99,8 @@ public class PedroConstants {
                 new PIDFCoefficients(kP, 0, kD, kFBack), DcMotorSimple.Direction.REVERSE,
                 DcMotorSimple.Direction.REVERSE, Math.toRadians(0), new Pose(-dtLength, dtWidth),
                 0.0, 3.3, false);
-        pod.setMotorCachingThreshold(0.05);
-        pod.setServoCachingThreshold(0.05);
+        pod.setMotorCachingThreshold(0.01);
+        pod.setServoCachingThreshold(0.01);
         return pod;
     }
 
@@ -109,8 +109,8 @@ public class PedroConstants {
                 new PIDFCoefficients(kP, 0, kD, kFBack), DcMotorSimple.Direction.FORWARD,
                 DcMotorSimple.Direction.REVERSE, Math.toRadians(0), new Pose(-dtLength, -dtWidth),
                 0, 3.3, false);
-        pod.setMotorCachingThreshold(0.05);
-        pod.setServoCachingThreshold(0.05);
+        pod.setMotorCachingThreshold(0.01);
+        pod.setServoCachingThreshold(0.01);
         return pod;
     }
 
