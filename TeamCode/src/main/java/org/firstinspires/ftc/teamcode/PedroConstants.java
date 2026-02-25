@@ -66,10 +66,10 @@ public class PedroConstants {
     // P=0.00645 D=0.00019
     // P=0.00549 D=0.00028
 
-    private static double kP = 0.002 * 180 / Math.PI;
-    private static double kD = 0.00006 * 180 / Math.PI;
-    private static double kFFront = 0.006;
-    private static double kFBack = 0.01;
+    private static double kP = 0.0005 * 180 / Math.PI;
+    private static double kD = 0.00001 * 180 / Math.PI;
+    private static double kFFront = 0.001;
+    private static double kFBack = 0.002;
 
     private static double dtLength = 26.8/2;
     private static double dtWidth = 34.4/2;
