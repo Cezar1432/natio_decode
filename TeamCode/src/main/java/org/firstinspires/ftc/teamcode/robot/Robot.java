@@ -1,0 +1,207 @@
+package org.firstinspires.ftc.teamcode.robot;
+
+import com.pedropathing.geometry.Pose;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.hardware.AnalogInputController;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.DcMotorControllerEx;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DigitalChannelController;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PwmControl;
+import com.qualcomm.robotcore.hardware.ServoController;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.pedropathing.PedroConstants;
+import org.firstinspires.ftc.teamcode.util.wrappers.BetterCRServo;
+import org.firstinspires.ftc.teamcode.util.wrappers.BetterMotor;
+import org.firstinspires.ftc.teamcode.util.wrappers.BetterMotorEx;
+import org.firstinspires.ftc.teamcode.util.wrappers.BetterServo;
+import org.firstinspires.ftc.teamcode.util.wrappers.BetterServoEx;
+import org.firstinspires.ftc.teamcode.util.wrappers.BreakBeam;
+import org.firstinspires.ftc.teamcode.util.wrappers.EvenBetterServo;
+import org.firstinspires.ftc.teamcode.util.wrappers.LazyPinpoint;
+import org.firstinspires.ftc.teamcode.util.wrappers.colorsensor.BetterColorSensor;
+import org.openftc.easyopencv.OpenCvCamera;
+
+import java.util.List;
+
+public class Robot {
+
+    public static LazyPinpoint odo;
+
+
+    DcMotorControllerEx exExpansionHubMotors;
+    public volatile BetterMotor turret;
+    public BetterMotorEx intake;
+    public DcMotorEx shooter, shooter2;
+    public DcMotorController controlHubMotors, expansionHubMotors;
+    public ServoController controlHubServos, expansionHubServos;
+    public BetterServo indexer1, indexer2;
+    public EvenBetterServo hood;
+
+    public BreakBeam breakBeam;
+
+    public BetterServoEx turret1, turret2;
+
+    public DigitalChannelController controller;
+    public AnalogInputController expansionHubAnalogInputController, controlHubAnalogInputController;
+    public static Alliance a= null;
+    BetterColorSensor colorSensor;
+    public HardwareMap hm;
+    public Telemetry t;
+    List<LynxModule> hubs;
+    LynxModule controlHub, expansionHub;
+
+    public Limelight3A ll;
+    static Robot instance;
+    public static VoltageSensor voltageSensor;
+
+    public static Robot getInstance(){
+        return instance;
+    }
+
+    public Robot(HardwareMap hm, Telemetry t, Alliance a){
+        this.hm= hm;
+        this.t= t;
+        this.a= a;
+    }
+    public Robot(HardwareMap hm, Alliance a){
+        this.hm= hm;
+
+        this.a= a;
+    }
+
+
+    public void initializeControllers(){
+        controlHubMotors= hm.get(DcMotorController.class, "Control Hub");
+        expansionHubMotors= hm.get(DcMotorController.class, "Expansion Hub 2");
+        controlHubServos= hm.get(ServoController.class, "Control Hub");
+        expansionHubServos= hm.get(ServoController.class, "Expansion Hub 2");
+        controlHubAnalogInputController= hm.get(AnalogInputController.class, "Control Hub");
+        expansionHubAnalogInputController= hm.get(AnalogInputController.class, "Expansion Hub 2");
+        exExpansionHubMotors= hm.get(DcMotorControllerEx.class, "Expansion Hub 2");
+        controller = hm.get(DigitalChannelController.class, "Control Hub");
+    }
+    public void initializeMotors(){
+
+
+        turret= new BetterMotor(controlHubMotors, 2).setCachingTolerance(.02);
+        turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intake= new BetterMotorEx(expansionHubMotors, 0);
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooter= hm.get(DcMotorEx.class, "shooter");
+        shooter2= hm.get(DcMotorEx.class, "shooter2");
+        shooter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+    }
+    private void assignHardware(){
+
+
+    }
+
+    public void initializeServos(){
+        //TODO sa puneti porturile bune
+        turret1= new BetterServoEx(expansionHubServos, 3);
+        turret2= new BetterServoEx(expansionHubServos, 4);
+        turret1.setPwmRange(new PwmControl.PwmRange(500, 2500));
+        turret2.setPwmRange(new PwmControl.PwmRange(500, 2500));
+         indexer1= new BetterServo(expansionHubServos, 0).setMaxDegrees(1065);
+        indexer2= new BetterServo(expansionHubServos, 1).setMaxDegrees(1065);
+        hood= new EvenBetterServo(expansionHubServos, 2);
+
+    }
+
+    public void initializeRest(){
+        //odo= hm.get(GoBildaPinpointDriver.class, "nigg");
+        if(opModeType== null)
+            throw new IllegalArgumentException("OpMode type nesetat");
+        if(opModeType== OpModeType.TELEOP) {
+            odo = hm.get(LazyPinpoint.class, "pinpoint");
+            odo.setUpdateRate(10);
+            odo.setOffsets(PedroConstants.xOffset, PedroConstants.yOffset, DistanceUnit.CM);
+            odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+            odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        }
+        colorSensor= hm.get(BetterColorSensor.class, "color sensor");
+        breakBeam= new BreakBeam(controller, 1);
+
+
+        ll= hm.get(Limelight3A.class, "ll");
+        int pipeline= a== Alliance.RED ? 2 : 9;
+        ll.pipelineSwitch(2);
+        ll.setPollRateHz(100);
+        ll.start();
+        //WebcamName name= hm.get(WebcamName.class, "camera");
+        //camera= OpenCvCameraFactory.getInstance().createWebcam(name);
+
+    }
+    public double updatedHeading= 0, robotHeading = 0;
+    public void initialize(){
+
+        //instance= t== null? new Robot(this.hm, this.a) : new Robot(this.hm, this.t, this.a);
+        instance= this;
+        hubs= hm.getAll(LynxModule.class);
+        hubs.forEach((hub)-> hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL));
+        //   hubs.forEach(LynxModule::stopBlinking);
+
+        controlHub= hubs.get(0);
+        expansionHub= hubs.get(1);
+//        for(LynxModule hub: hubs)
+//            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        initializeControllers();
+        initializeMotors();
+        initializeServos();
+        initializeRest();
+        assignHardware();
+    }
+
+
+    public enum OpModeType{
+        TELEOP, AUTO
+    }
+    OpModeType opModeType= null;
+    public void setOpModeType(OpModeType type){
+        opModeType= type;
+    }
+    ElapsedTime timer;
+    public void update(){
+        if(timer== null)
+            timer= new ElapsedTime();
+        hubs.forEach(LynxModule::clearBulkCache);
+        //hubs.forEach(LynxModule::close);
+
+
+
+//        if(opModeType== OpModeType.TELEOP)
+//            odo.update(GoBildaPinpointDriver.ReadData.ONLY_UPDATE_HEADING);
+//
+//        robotHeading = odo.getHeading(AngleUnit.DEGREES);
+
+        // odo.update();
+
+        if(opModeType.equals(OpModeType.TELEOP)) {
+            odo.update();
+            robotPose= new Pose(odo.getPosX(DistanceUnit.METER), odo.getPosY(DistanceUnit.METER), odo.getHeading(AngleUnit.RADIANS));
+        }
+
+
+    }
+
+    public static Pose robotPose;
+    public static boolean shooting= false;
+
+
+
+
+}

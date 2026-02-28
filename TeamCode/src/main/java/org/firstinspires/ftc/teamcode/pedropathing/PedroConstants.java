@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.pedropathing;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.control.FilteredPIDFCoefficients;
@@ -7,7 +7,6 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
 import com.pedropathing.ftc.drivetrains.CoaxialPod;
-import com.pedropathing.ftc.drivetrains.Swerve;
 import com.pedropathing.ftc.drivetrains.SwerveConstants;
 import com.pedropathing.ftc.localization.constants.PinpointConstants;
 import com.pedropathing.geometry.Pose;
@@ -19,13 +18,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
-
 @Configurable
 public class PedroConstants {
     public static PIDFCoefficients secondaryHeadingCoeffs = new PIDFCoefficients(0.8, 0, 0.015, 0);
 
     public static PIDFCoefficients headingCoeffs = new PIDFCoefficients(1.75, 0, 0.003, 0);
 
+    public static double xOffset= 16, yOffset= 5.35;
 
     public static double leftFrontOffset= -50, rightFrontOffset = -25, leftBackOffset= 80, rightBackOffset= -60;
     public static FollowerConstants followerConstants = new FollowerConstants()
@@ -57,8 +56,8 @@ public class PedroConstants {
             mass(13.732);
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(-2.9350393701) //-74.5mm
-            .strafePodX(-5.9133858268) //-150.2
+            .forwardPodY(xOffset) //-74.5mm
+            .strafePodX(yOffset) //-150.2
             .distanceUnit(DistanceUnit.INCH).hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
@@ -83,46 +82,46 @@ public class PedroConstants {
     private static double dtWidth = 34.4/2;
 
     public static CoaxialPod leftFront(HardwareMap hardwareMap) {
-        CoaxialPod pod = new CoaxialPod(hardwareMap, "sm2", "ss2", "se2",
+        CoaxialPod pod = new CoaxialPod(hardwareMap, "sm1", "ss2", "se2",
                 new PIDFCoefficients(kP, 0, kD, kFFront), DcMotorSimple.Direction.REVERSE,
                 DcMotorSimple.Direction.FORWARD, Math.toRadians(leftFrontOffset), new Pose(dtLength, dtWidth),
-                0, 3.3, false);
-        pod.setMotorCachingThreshold(0.2);
-        pod.setServoCachingThreshold(0.2);
+                0, 3.3, true);
+        pod.setMotorCachingThreshold(0.01);
+        pod.setServoCachingThreshold(0.01);
         return pod;
     }
 
     public static CoaxialPod rightFront(HardwareMap hardwareMap) {
-        CoaxialPod pod = new CoaxialPod(hardwareMap, "sm1", "ss1", "se1",
+        CoaxialPod pod = new CoaxialPod(hardwareMap, "sm2", "ss1", "se1",
                 new PIDFCoefficients(kP, 0, kD, kFFront), DcMotorSimple.Direction.FORWARD,
                 DcMotorSimple.Direction.FORWARD, Math.toRadians(rightFrontOffset), new Pose(dtLength, -dtWidth),
-                0.0, 3.3, false);
+                0.0, 3.3, true);
         pod.setMotorCachingThreshold(0.01);
         pod.setServoCachingThreshold(0.01);
         return pod;
     }
 
     public static CoaxialPod leftBack(HardwareMap hardwareMap) {
-        CoaxialPod pod = new CoaxialPod(hardwareMap, "sm3", "ss3", "se3",
+        CoaxialPod pod = new CoaxialPod(hardwareMap, "sm0", "ss3", "se3",
                 new PIDFCoefficients(kP, 0, kD, kFBack), DcMotorSimple.Direction.REVERSE,
                 DcMotorSimple.Direction.FORWARD, Math.toRadians(leftBackOffset), new Pose(-dtLength, dtWidth),
-                0.0, 3.3, false);
+                0.0, 3.3, true);
         pod.setMotorCachingThreshold(0.01);
         pod.setServoCachingThreshold(0.01);
         return pod;
     }
 
     public static CoaxialPod rightBack(HardwareMap hardwareMap) {
-        CoaxialPod pod = new CoaxialPod(hardwareMap, "sm0", "ss0", "se0",
+        CoaxialPod pod = new CoaxialPod(hardwareMap, "sm3", "ss0", "se0",
                 new PIDFCoefficients(kP, 0, kD, kFBack), DcMotorSimple.Direction.FORWARD,
                 DcMotorSimple.Direction.FORWARD, Math.toRadians(rightBackOffset), new Pose(-dtLength, -dtWidth),
-                0, 3.3, false);
+                0, 3.3, true);
         pod.setMotorCachingThreshold(0.01);
         pod.setServoCachingThreshold(0.01);
         return pod;
     }
-    public static Swerve getSwerve(HardwareMap hardwareMap){
-        return new Swerve(hardwareMap, PedroConstants.swerveConstants, PedroConstants.leftFront(hardwareMap)
+    public static MySwerve getSwerve(HardwareMap hardwareMap){
+        return new MySwerve(hardwareMap, PedroConstants.swerveConstants, PedroConstants.leftFront(hardwareMap)
                 ,PedroConstants.rightFront(hardwareMap), PedroConstants.leftBack(hardwareMap), PedroConstants.rightBack(hardwareMap));
     }
 

@@ -1,0 +1,53 @@
+package org.firstinspires.ftc.teamcode.util.math;
+
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+public class SlewRateLimiter {
+
+    public double limiter, lastValue;
+    public boolean firstRun;
+    ElapsedTime timer;
+
+
+    /**
+     * joystick-urile iau valori de la 1 la -1, deci disatanta totala este "2".
+     * @param limiter este cata astfel de distanta ii permiteti joystick-urilor sa faca pe secunda
+     */
+    public SlewRateLimiter(double limiter){
+        this.limiter= limiter;
+        this.lastValue= 0;
+        firstRun= true;
+
+    }
+
+
+
+    public double calculate(double input) {
+
+        if (!firstRun) {
+            if(limiter< 15) {
+                double deltaTime = timer.seconds();
+                timer.reset();
+                double maxChange = deltaTime * limiter;
+                if (Math.abs(input - lastValue) > maxChange)
+                    lastValue += maxChange * Math.signum(input - lastValue);
+                else
+                    lastValue = input;
+            }
+            else{
+                lastValue= input;
+            }
+            return lastValue;
+
+        }
+        timer= new ElapsedTime();
+        firstRun = false;
+        return input;
+
+    }
+
+    public void setLimiter(double limiter){
+        this.limiter= limiter;
+    }
+
+}
