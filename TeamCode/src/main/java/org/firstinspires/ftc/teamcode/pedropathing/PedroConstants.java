@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.pedropathing;
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.control.FilteredPIDFCoefficients;
 import com.pedropathing.control.PIDFCoefficients;
+import com.pedropathing.control.PredictiveBrakingCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
@@ -20,28 +21,32 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Configurable
 public class PedroConstants {
-    public static PIDFCoefficients secondaryHeadingCoeffs = new PIDFCoefficients(0.8, 0, 0.015, 0);
+    //  public static PIDFCoefficients secondaryHeadingCoeffs = new PIDFCoefficients(0.8, 0, 0.015, 0);
+    public static PIDFCoefficients secondaryHeadingCoeffs = new PIDFCoefficients(0.94, 0, 0.0006, 0);
 
-    public static PIDFCoefficients headingCoeffs = new PIDFCoefficients(1.75, 0, 0.003, 0);
+    // public static PIDFCoefficients headingCoeffs = new PIDFCoefficients(1.75, 0, 0.003, 0);
+    public static PIDFCoefficients headingCoeffs = new PIDFCoefficients(0.8, 0, 0.005, 0);
 
-    public static double xOffset= 16, yOffset= 5.35;
+    public static double xOffset= 16.15, yOffset= -5.35; //in cm
+    //public static double xOffset= 6.358, yOffset= -2.12598; //in inch
 
+    // public static double leftFrontOffset= -50, rightFrontOffset = -25, leftBackOffset= 80, rightBackOffset= -60;
     public static double leftFrontOffset= -50, rightFrontOffset = -25, leftBackOffset= 80, rightBackOffset= -60;
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .forwardZeroPowerAcceleration(-197.1)
-            .lateralZeroPowerAcceleration(-197.1)
+            .forwardZeroPowerAcceleration(-50.622)
+            .lateralZeroPowerAcceleration(-96.27)
             .useSecondaryDrivePIDF(true).useSecondaryHeadingPIDF(true)
             .useSecondaryTranslationalPIDF(true)
-
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.125, 0, 0.008, 0))
-            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.0825, 0, 0.008, 0))
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.1257, 0, 0.0082, 0))
+            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.095, 0, 0.0094, 0))
+          //  .predictiveBrakingCoefficients(new PredictiveBrakingCoefficients(0 , 0.182, 1.625))
 
             .headingPIDFCoefficients(headingCoeffs)
             .secondaryHeadingPIDFCoefficients(secondaryHeadingCoeffs)
 
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.005, 0, 0.00003, 0.6, 0.13))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.0075, 0, 0.00019, 0.6, 0.16))
             .secondaryDrivePIDFCoefficients(
-                    new FilteredPIDFCoefficients(0.004, 0, 0.000002, 0.6, 0.13))
+                    new FilteredPIDFCoefficients(0.0018, 0, 0.0003, 0.6, 0.16))
 
 
             // .drivePIDFCoefficients(new FilteredPIDFCoefficients(0,0,0,0,0))
@@ -52,8 +57,8 @@ public class PedroConstants {
             // 0,//0.38735914623969386,
             // 0.002)
             // )
-            .centripetalScaling(0.0005).
-            mass(13.732);
+            .centripetalScaling(0).
+            mass(12.52);
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
             .forwardPodY(xOffset) //-74.5mm
@@ -61,12 +66,12 @@ public class PedroConstants {
             .distanceUnit(DistanceUnit.INCH).hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
-            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED);
+            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
     public static SwerveConstants swerveConstants = new SwerveConstants()
-            .velocity(83)
+//             .velocity(83)
 //            .zeroPowerBehavior(SwerveConstants.ZeroPowerBehavior.IGNORE_ANGLE_CHANGES)
-            .useBrakeModeInTeleOp(true);
+            .useBrakeModeInTeleOp(false);
 
     // F - front: .130, back: .190
     // P=0.00645 D=0.00019
@@ -83,7 +88,7 @@ public class PedroConstants {
 
     public static CoaxialPod leftFront(HardwareMap hardwareMap) {
         CoaxialPod pod = new CoaxialPod(hardwareMap, "sm1", "ss2", "se2",
-                new PIDFCoefficients(kP, 0, kD, kFFront), DcMotorSimple.Direction.REVERSE,
+                new PIDFCoefficients(kP, 0, kD, kFFront), DcMotorSimple.Direction.FORWARD,
                 DcMotorSimple.Direction.FORWARD, Math.toRadians(leftFrontOffset), new Pose(dtLength, dtWidth),
                 0, 3.3, true);
         pod.setMotorCachingThreshold(0.01);
@@ -93,7 +98,7 @@ public class PedroConstants {
 
     public static CoaxialPod rightFront(HardwareMap hardwareMap) {
         CoaxialPod pod = new CoaxialPod(hardwareMap, "sm2", "ss1", "se1",
-                new PIDFCoefficients(kP, 0, kD, kFFront), DcMotorSimple.Direction.FORWARD,
+                new PIDFCoefficients(kP, 0, kD, kFFront), DcMotorSimple.Direction.REVERSE,
                 DcMotorSimple.Direction.FORWARD, Math.toRadians(rightFrontOffset), new Pose(dtLength, -dtWidth),
                 0.0, 3.3, true);
         pod.setMotorCachingThreshold(0.01);
@@ -103,7 +108,7 @@ public class PedroConstants {
 
     public static CoaxialPod leftBack(HardwareMap hardwareMap) {
         CoaxialPod pod = new CoaxialPod(hardwareMap, "sm0", "ss3", "se3",
-                new PIDFCoefficients(kP, 0, kD, kFBack), DcMotorSimple.Direction.REVERSE,
+                new PIDFCoefficients(kP, 0, kD, kFBack), DcMotorSimple.Direction.FORWARD,
                 DcMotorSimple.Direction.FORWARD, Math.toRadians(leftBackOffset), new Pose(-dtLength, dtWidth),
                 0.0, 3.3, true);
         pod.setMotorCachingThreshold(0.01);
@@ -113,7 +118,7 @@ public class PedroConstants {
 
     public static CoaxialPod rightBack(HardwareMap hardwareMap) {
         CoaxialPod pod = new CoaxialPod(hardwareMap, "sm3", "ss0", "se0",
-                new PIDFCoefficients(kP, 0, kD, kFBack), DcMotorSimple.Direction.FORWARD,
+                new PIDFCoefficients(kP, 0, kD, kFBack), DcMotorSimple.Direction.REVERSE,
                 DcMotorSimple.Direction.FORWARD, Math.toRadians(rightBackOffset), new Pose(-dtLength, -dtWidth),
                 0, 3.3, true);
         pod.setMotorCachingThreshold(0.01);
@@ -141,6 +146,3 @@ public class PedroConstants {
                 .pinpointLocalizer(localizerConstants).build();
     }
 }
-
-
-

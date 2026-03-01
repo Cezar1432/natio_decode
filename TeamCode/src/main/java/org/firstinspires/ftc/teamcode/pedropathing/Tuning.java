@@ -28,9 +28,9 @@ import com.pedropathing.math.Vector;
 import com.pedropathing.paths.HeadingInterpolator;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
+import com.pedropathing.telemetry.SelectableOpMode;
 import com.pedropathing.util.PoseHistory;
 
-import com.pedropathing.telemetry.SelectableOpMode;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -182,7 +182,7 @@ class LocalizationTest extends OpMode {
     @Override
     public void loop() {
         follower.setTeleOpDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x,
-                -gamepad1.right_stick_x, false);
+                -gamepad1.right_stick_x, true);
         follower.update();
 
         telemetryM.debug("drivetrain debug: ", follower.drivetrain.debugString());
@@ -598,7 +598,7 @@ class LateralVelocityTuner extends OpMode {
  */
 class ForwardZeroPowerAccelerationTuner extends OpMode {
     private final ArrayList<Double> accelerations = new ArrayList<>();
-    public static double VELOCITY = 70;
+    public static double VELOCITY = 10;
 
     private double previousVelocity;
     private long previousTimeNano;
@@ -1162,7 +1162,8 @@ class DriveTuner extends OpMode {
 
     @Override
     public void start() {
-        follower.deactivateAllPIDFs();
+        follower.activateHeading();
+        follower.activateTranslational();
         follower.activateDrive();
 
         forwards = follower.pathBuilder().setGlobalDeceleration()
@@ -2192,7 +2193,7 @@ class PodPDFAutoTuner extends OpMode {
  *
  * @author Kabir Goyal
  */
-class PodEncoderMinMaxCalibrator extends OpMode {
+class   PodEncoderMinMaxCalibrator extends OpMode {
 
     // ==================== CONFIGURATION ====================
     private static final int NUM_PODS = 4;
