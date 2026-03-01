@@ -5,6 +5,8 @@ import org.firstinspires.ftc.teamcode.util.wrappers.BreakBeam;
 import org.firstinspires.ftc.teamcode.util.wrappers.colorsensor.BetterColorSensor;
 import org.firstinspires.ftc.teamcode.util.wrappers.colorsensor.Colors;
 
+import java.util.HashMap;
+
 public class Spindexer {
     public static BetterServo s1, s2;
 
@@ -12,33 +14,27 @@ public class Spindexer {
         s1.setPosition(pos);
         s2.setPosition(pos);
     }
+    public static boolean slot3Full;
     public static void shootRandom(){
 //         s1.setMaxDegrees(1100);
 //         s2.setMaxDegrees(1100);
         setPosition(1);
+        clearAll();
+        slot3Full= false;
         //  s2.setPosition(s31.getPosition());
     }
 
 
     public enum Slots{
-        SLOT_1(0.9267,0, Colors.Balls.NONE), SLOT_2(.8039,0, Colors.Balls.NONE), SLOT_3(.6683  ,0, Colors.Balls.NONE);//EJECT1(0.38,0),EJECT2(0.5117,0),EJECT3(0.6233,0);   //poz bune initiale
+        SLOT_1(0.9267,0), SLOT_2(.8039,0), SLOT_3(.6683  ,0);//EJECT1(0.38,0),EJECT2(0.5117,0),EJECT3(0.6233,0);   //poz bune initiale
 //        //  SLOT_1(0.4494,0), SLOT_2(.311,0), SLOT_3(.215,0),EJECT1(0.38,0),EJECT2(0.5117,0),EJECT3(0.6233,0);
         // SLOT_1(0.4656,0), SLOT_2(.345,0), SLOT_3(.2217,0),EJECT1(0.38,0),EJECT2(0.5117,0),EJECT3(0.6233,0);
 
-        enum Color{
-            PURPLE, GREEN, NONE
-        }
-        public void setColor( Slots slot,Colors.Balls color){
-
-                    slot.c= color;
-        }
         final double frontPose, shootPose;
-        public Colors.Balls c;
         // final double shootPose;
-        Slots(double frontPose, double shootPose, Colors.Balls color){
+        Slots(double frontPose, double shootPose){
             this.frontPose= frontPose;
             this.shootPose= shootPose;
-            this.c= color;
         }
 
     }
@@ -68,6 +64,23 @@ public class Spindexer {
         s1.turn(-120);
         s2.turn(120);
     }
+    static HashMap<Slots, Colors.Balls> ballsAndSlots= new HashMap<>();
+
+    public static Colors.Balls getBallColor(Slots slot){
+        return ballsAndSlots.get(slot);
+    }
+    public static void setSlotColor(Slots slot, Colors.Balls color){
+        ballsAndSlots.put(slot, color);
+    }
+
+    public static void clear(Slots slot){
+        ballsAndSlots.put(slot, null);
+    }
+    public static void clearAll(){
+        for(Slots slot: Slots.values())
+            clear(slot);
+    }
+
 
     public static boolean sorting= false;
     public static void setSorting(boolean set){
@@ -91,24 +104,24 @@ public class Spindexer {
                 double dist= colorSensor.getDistanceInCM();
                 testBoolean= dist< BallInDist;
                 beamState = breakBeam.getBeamState();
-                if(System.currentTimeMillis() - lastTime > minimumTime && beamState.equals(BreakBeam.Status.BROKEN)){
+                if(System.currentTimeMillis() - lastTime > minimumTime && beamState.equals(BreakBeam.Status.BROKEN) && currentSlot != Slots.SLOT_3){
 
-                    if(currentSlot != Slots.SLOT_3) {
-                        lastTime = System.currentTimeMillis();
-                        Colors.Balls color = colorSensor.getColorSeenBySensor();
-                        currentSlot.setColor(currentSlot, color);
-                        if (currentSlot == Slots.SLOT_1)
-                            turnTo(Slots.SLOT_2);
-                        else if (currentSlot == Slots.SLOT_2)
-                            turnTo(Slots.SLOT_3);
-                    }
-                    else{
-                        Colors.Balls color = colorSensor.getColorSeenBySensor();
-                        Slots.SLOT_3.setColor(Slots.SLOT_3, color);
-                    }
+                    lastTime= System.currentTimeMillis();
+                    Colors.Balls color= colorSensor.getColorSeenBySensor();
+                    setSlotColor(currentSlot, color);
+                    if(currentSlot== Slots.SLOT_1)
+                        turnTo(Slots.SLOT_2);
+                    else if(currentSlot== Slots.SLOT_2)
+                        turnTo(Slots.SLOT_3);
 
                 }
-            }
+                else
+                    if(System.currentTimeMillis() - lastTime > minimumTime && beamState.equals(BreakBeam.Status.BROKEN) && !slot3Full &&currentSlot == Slots.SLOT_3){
+                        slot3Full= true;
+                        Colors.Balls color= colorSensor.getColorSeenBySensor();
+                        setSlotColor(Slots.SLOT_3, color);
+                    }
+                }
         }
     }
 
