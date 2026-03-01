@@ -35,7 +35,7 @@ import java.util.List;
 
 public class Robot {
 
-    public static LazyPinpoint odo;
+    public static GoBildaPinpointDriver odo;
 
 
     DcMotorControllerEx exExpansionHubMotors;
@@ -93,8 +93,6 @@ public class Robot {
     public void initializeMotors(){
 
 
-        turret= new BetterMotor(controlHubMotors, 2).setCachingTolerance(.02);
-        turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intake= new BetterMotorEx(expansionHubMotors, 0);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shooter= hm.get(DcMotorEx.class, "shooter");
@@ -116,7 +114,7 @@ public class Robot {
         turret2= new BetterServoEx(expansionHubServos, 4);
         turret1.setPwmRange(new PwmControl.PwmRange(500, 2500));
         turret2.setPwmRange(new PwmControl.PwmRange(500, 2500));
-         indexer1= new BetterServo(expansionHubServos, 0).setMaxDegrees(1065);
+        indexer1= new BetterServo(expansionHubServos, 0).setMaxDegrees(1065);
         indexer2= new BetterServo(expansionHubServos, 1).setMaxDegrees(1065);
         hood= new EvenBetterServo(expansionHubServos, 2);
 
@@ -127,8 +125,7 @@ public class Robot {
         if(opModeType== null)
             throw new IllegalArgumentException("OpMode type nesetat");
         if(opModeType== OpModeType.TELEOP) {
-            odo = hm.get(LazyPinpoint.class, "pinpoint");
-            odo.setUpdateRate(10);
+            odo = hm.get(GoBildaPinpointDriver.class, "pinpoint");
             odo.setOffsets(PedroConstants.xOffset, PedroConstants.yOffset, DistanceUnit.CM);
             odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
             odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
@@ -147,7 +144,7 @@ public class Robot {
 
     }
     public double updatedHeading= 0, robotHeading = 0;
-    public void initialize(){
+    public Robot initialize(){
 
         //instance= t== null? new Robot(this.hm, this.a) : new Robot(this.hm, this.t, this.a);
         instance= this;
@@ -164,6 +161,7 @@ public class Robot {
         initializeServos();
         initializeRest();
         assignHardware();
+        return this;
     }
 
 
@@ -171,8 +169,9 @@ public class Robot {
         TELEOP, AUTO
     }
     OpModeType opModeType= null;
-    public void setOpModeType(OpModeType type){
+    public Robot setOpModeType(OpModeType type){
         opModeType= type;
+        return this;
     }
     ElapsedTime timer;
     public void update(){

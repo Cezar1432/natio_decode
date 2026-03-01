@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.pedropathing.ftc.drivetrains.Swerve;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.Vector;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.teamcode.pedropathing.MySwerve;
 import org.firstinspires.ftc.teamcode.pedropathing.PedroConstants;
@@ -42,11 +44,34 @@ public class Chassis {
         return this;
     }
 
+    double lastAngle= 0;
     public void update(){
         Vector inputs= new Vector(new Pose(strafe.calculate(leftStickX.getAsDouble()), forward.calculate(leftStickY.getAsDouble())));
         if(robotCentric){
-            inputs.rotateVector(Robot.robotPose.getHeading());
+            inputs.rotateVector(-Robot.robotPose.getHeading());
         }
-        swerve.arcadeDrive(inputs.getXComponent(), inputs.getYComponent(), rot.calculate(rightStickX.getAsDouble()));
+        double rotation= rot.calculate(rightStickX.getAsDouble());
+        if(Math.abs(rotation)> 1e-2 && usingHeadingPIDF) {
+            rotation = headingController.calculate(lastAngle, Robot.robotPose.getHeading());
+        }
+        else{
+            lastAngle=Robot.robotPose.getHeading();
+        }
+        swerve.arcadeDrive(inputs.getXComponent(), inputs.getYComponent(), rotation);
+    }
+    PIDFController headingController;
+    boolean usingHeadingPIDF= false;
+    public Chassis setHeadingPIDF(PIDFCoefficients coefs){
+        usingHeadingPIDF= true;
+        headingController= new PIDFController(coefs.p, coefs.i, coefs.d, coefs.f);
+        return this;
+    }
+    public Chassis startTeleOpDrive(){
+        swerve.startTeleopDrive();
+        return this;
+    }
+    public Chassis startTeleOpDrive(boolean breakMode){
+        swerve.startTeleopDrive(breakMode);
+        return this;
     }
 }

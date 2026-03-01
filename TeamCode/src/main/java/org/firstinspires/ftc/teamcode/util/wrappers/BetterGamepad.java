@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.util.wrappers;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.tasks.command_based.core.InstantTask;
+import org.firstinspires.ftc.teamcode.tasks.command_based.core.Command;
 import org.firstinspires.ftc.teamcode.tasks.command_based.core.Scheduler;
 import org.firstinspires.ftc.teamcode.tasks.command_based.core.Task;
 
@@ -13,9 +14,9 @@ public class BetterGamepad {
     Gamepad gp;
     int numberOfButtons= 14;
     Button[] buttons= new Button[numberOfButtons];
-    Scheduler scheduler;
+    Command command;
     public void killScheduler(){
-        scheduler.removeAllTasks();
+        command.removeAllTasks();
     }
 
 
@@ -38,7 +39,7 @@ public class BetterGamepad {
     public class Button{
         Buttons button;
         BooleanSupplier pressed;
-        Supplier<Scheduler> s;
+        Supplier<Task> s;
         public Button(Buttons button){
             this.button= button;
 
@@ -88,14 +89,11 @@ public class BetterGamepad {
                     break;
             }
         }
-        public void whenPressed(Scheduler s){
-            this.s= ()-> s;
+        public void whenPressed(Supplier<Task> s){
+            this.s= s;
         }
         public void whenPressed(InstantTask t){
-            this.s= ()-> new Scheduler().addTask(t);
-        }
-        public void whenPressed(Task t){
-            this.s= ()-> new Scheduler().addTask(t);
+            this.s= ()->()-> {t.run(); return true;};
         }
 
         public boolean wasPressed(){
@@ -123,11 +121,10 @@ public class BetterGamepad {
         for(Button button: buttons){
             if(button.s!= null){
                 if(button.wasPressed()) {
-                    Scheduler s= button.s.get();
+                    Scheduler.add(button.s);
                 }
             }
         }
-        scheduler.update();
 
     }
     public enum Trigger{

@@ -1,14 +1,12 @@
 package org.firstinspires.ftc.teamcode.tasks.command_based.core;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.Pose;
 
 import org.firstinspires.ftc.teamcode.tasks.command_based.command_types.Wait;
 
 import java.util.LinkedList;
-import java.util.function.Supplier;
 
-public class Scheduler {
+public class Command {
 
 
 
@@ -18,12 +16,12 @@ public class Scheduler {
     boolean last= true, current= false, justDone= false;
     public LinkedList<Task> list;
 
-    public Scheduler(){
+    public Command(){
         list = new LinkedList<>();
         factory= new LinkedList<>();
 
     }
-    public Scheduler(Follower f){this.f =f; list = new LinkedList<>();
+    public Command(Follower f){this.f =f; list = new LinkedList<>();
 factory= new LinkedList<>();
     }
     public boolean done(){
@@ -34,7 +32,7 @@ factory= new LinkedList<>();
         return list.size();
     }
 
-    public Scheduler addChassis(Follower chassis){
+    public Command addChassis(Follower chassis){
         this.f= chassis;
         return this;
     }
@@ -42,12 +40,12 @@ factory= new LinkedList<>();
 
 
 
-    public Scheduler addTask(Task t){
+    public Command addTask(Task t){
         factory.addLast(()-> t);
         list.addLast(t);
         return this;
     }
-    public Scheduler addTask(InstantTask t){
+    public Command addTask(InstantTask t){
 
         list.addLast(()-> {
             t.run();
@@ -64,13 +62,15 @@ factory= new LinkedList<>();
     public boolean justDone(){
         return justDone;
     }
-    public Scheduler waitSeconds(double sec){
+    public Command waitSeconds(double sec){
 
+
+        list.addLast(new Wait(sec));
 
         return this;
     }
     @Deprecated
-    public Scheduler waitSecondsFirst(double sec){
+    public Command waitSecondsFirst(double sec){
         list.addFirst(new Wait(sec));
         return this;
     }
@@ -79,34 +79,13 @@ factory= new LinkedList<>();
         list = new LinkedList<>();
     }
     @Deprecated
-    public Scheduler addFirst(Task t){
+    public Command addFirst(Task t){
         list.addFirst(t);
         return this;
     }
-    public Scheduler copy(){
-        Scheduler copy= new Scheduler();
-        for(Task t: list)
-            copy.addTask(t);
 
-        return copy;
-    }
 
-    public Task getAsTask(){
-        Task task;
-        class SchedulerAsTask implements Task{
 
-            Scheduler s;
-            public SchedulerAsTask(Scheduler s){
-                this.s= s.copy();
-            }
-            @Override
-            public boolean Run() {
-                s.update();
-                return s.done();
-            }
-        }
-        return new SchedulerAsTask(this);
-    }
     public void update(){
 
         if(done()) {

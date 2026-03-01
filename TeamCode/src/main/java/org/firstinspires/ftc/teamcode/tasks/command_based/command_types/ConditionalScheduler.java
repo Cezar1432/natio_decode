@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.tasks.command_based.command_types;
 
-import org.firstinspires.ftc.teamcode.tasks.command_based.core.Scheduler;
+import org.firstinspires.ftc.teamcode.tasks.command_based.core.Command;
 import org.firstinspires.ftc.teamcode.tasks.command_based.core.Task;
 
 import java.util.function.BooleanSupplier;
@@ -14,20 +14,20 @@ public class ConditionalScheduler implements Task {
     }
     Cardinality cardinality;
     SchedulerWithCondition[] schedulers;
-    Scheduler schedulerIfTrue, schedulerIfFalse, finalScheduler;
+    Command commandIfTrue, commandIfFalse, finalCommand;
     BooleanSupplier supplier;
 
     boolean checked= false;
-    public ConditionalScheduler(Scheduler schedulerIfTrue, Scheduler schedulerIfFalse, BooleanSupplier supplier){
-        this.schedulerIfFalse= schedulerIfFalse;
-        this.schedulerIfTrue= schedulerIfTrue;
+    public ConditionalScheduler(Command commandIfTrue, Command commandIfFalse, BooleanSupplier supplier){
+        this.commandIfFalse = commandIfFalse;
+        this.commandIfTrue = commandIfTrue;
         this.supplier= supplier;
         cardinality= Cardinality.TWO;
     }
 
-    public ConditionalScheduler(Scheduler defaultScheduler, SchedulerWithCondition... schedulers){
+    public ConditionalScheduler(Command defaultCommand, SchedulerWithCondition... schedulers){
         this.schedulers= schedulers;
-        this.finalScheduler= defaultScheduler;
+        this.finalCommand = defaultCommand;
         cardinality= Cardinality.MORE_THAN_TWO;
     }
 
@@ -44,9 +44,9 @@ public class ConditionalScheduler implements Task {
             {
                 boolean res= supplier.getAsBoolean();
                 if(res)
-                    finalScheduler= schedulerIfTrue;
+                    finalCommand = commandIfTrue;
                 else
-                    finalScheduler= schedulerIfFalse;
+                    finalCommand = commandIfFalse;
                 checked= true;
             }
             else{
@@ -54,15 +54,15 @@ public class ConditionalScheduler implements Task {
                 for(SchedulerWithCondition scheduler: schedulers){
                     boolean res= scheduler.supplier.getAsBoolean();
                     if(res){
-                        this.finalScheduler= scheduler.scheduler;
+                        this.finalCommand = scheduler.command;
                         break;
                     }
                 }
             }
         }
 
-        finalScheduler.update();
-        return finalScheduler.done();
+        finalCommand.update();
+        return finalCommand.done();
     }
 
 
