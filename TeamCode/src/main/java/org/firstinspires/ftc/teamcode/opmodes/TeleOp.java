@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.bylazar.telemetry.PanelsTelemetry;
 
@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Spindexer;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Turret;
+import org.firstinspires.ftc.teamcode.tasks.seasonal_tasks.Spit;
 import org.firstinspires.ftc.teamcode.util.BetterOpMode;
 import org.firstinspires.ftc.teamcode.util.MultipleTelemetry;
 import org.firstinspires.ftc.teamcode.util.wrappers.BetterGamepad;
@@ -41,7 +42,7 @@ public abstract class TeleOp extends BetterOpMode {
                 .setLimiters(6,6,20)
                 .fieldCentric(true)
                 .startTeleOpDrive(true);
-        gamepadEx1.getButton(BetterGamepad.Buttons.CROSS).whenPressed(Intake::toggle);
+        gamepadEx1.getButton(BetterGamepad.Buttons.CROSS).whenPressed(Intake::toggle, BetterGamepad.Type.PARALLEL);
         gamepadEx1.getButton(BetterGamepad.Buttons.TOUCHPAD)
                 .whenPressed(()->{
                     double x= this.a== Alliance.BLUE ? Turret.FIELD_LENGTH - PedroConstants.dtWidth/100 : PedroConstants.dtWidth/100;
@@ -50,7 +51,12 @@ public abstract class TeleOp extends BetterOpMode {
                     Robot.odo.setPosX(x, DistanceUnit.METER);
                     Robot.odo.setPosY(y, DistanceUnit.METER);
                     Robot.odo.setHeading(heading, AngleUnit.RADIANS);
-                });
+                }
+                ,
+                        BetterGamepad.Type.PARALLEL);
+
+        gamepadEx1.getButton(BetterGamepad.Buttons.TRIANGLE)
+                .whenPressed(Spit::new, BetterGamepad.Type.PARALLEL);
 
 
     }

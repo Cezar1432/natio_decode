@@ -37,12 +37,13 @@ public class BetterGamepad {
 
     }
     public enum Type{
-        INSTANT, NON_INSTANT
+        MAIN, PARALLEL
     }
     public class Button{
         Buttons button;
         BooleanSupplier pressed;
         Supplier<Task> s;
+        boolean schedule;
         public Button(Buttons button){
             this.button= button;
 
@@ -93,28 +94,30 @@ public class BetterGamepad {
             }
         }
         public boolean now= true;
-        Type type= Type.NON_INSTANT;
-        public void whenPressed(Supplier<Task> s){
+        Type type= Type.MAIN;
+        public void whenPressed(Supplier<Task> s, Type type){
             this.s= s;
-            type= Type.NON_INSTANT;
+            this.type= type;
+            this.now= true;
         }
 
-        public void whenPressed(Supplier<Task> s, boolean now){
+        public void whenPressed(Supplier<Task> s, Type type, boolean now){
             this.s= s;
             this.now    = now;
-            type= Type.NON_INSTANT;
+            this.type= type;
         }
 
 
 
-        public void whenPressed(InstantTask t){
+        public void whenPressed(InstantTask t, Type type){
             this.s= ()->()-> {t.run(); return true;};
-            type= Type.INSTANT;
+            this.type= type;
+            this.now= true;
         }
-        public void whenPressed(InstantTask t, boolean now){
+        public void whenPressed(InstantTask t, Type type, boolean now){
             this.s= ()->()-> {t.run(); return true;};
-            this.now= now   ;
-            type= Type.INSTANT;
+            this.now= now;
+            this.type= type;
         }
 
         public boolean wasPressed(){
@@ -142,14 +145,14 @@ public class BetterGamepad {
         for(Button button: buttons){
             if(button.s!= null){
                 if(button.wasPressed()) {
-                    if(button.type.equals(Type.NON_INSTANT)) {
-                        if (button.now)
+                    if(button.type.equals(Type.MAIN)) {
+                        if(button.now)
                             Scheduler.now(button.s);
                         else
                             Scheduler.schedule(button.s);
                     }
                     else{
-                        button.s.get().Run();
+                        Scheduler.inParallel(button.s);
                     }
                 }
             }

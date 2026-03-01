@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorController;
@@ -20,7 +20,7 @@ public class scheduletest extends BetterOpMode {
             controller= hardwareMap.get(DcMotorControllerEx.class, "Expansion Hub 2");
             motor= new BetterMotorEx(controller, 0);
         Intake.motor= motor;
-        gamepadEx1.getButton(BetterGamepad.Buttons.CROSS).whenPressed(TestTask::new);
+        gamepadEx1.getButton(BetterGamepad.Buttons.CROSS).whenPressed(TestTask::new, BetterGamepad.Type.PARALLEL);
 
     }
 
@@ -37,9 +37,9 @@ public class scheduletest extends BetterOpMode {
     @Override
     public void active_loop() {
         if(gamepadEx1.getButton(BetterGamepad.Buttons.CIRCLE).wasPressed())
-            Scheduler.schedule(TestTask2::new);
+            Scheduler.now(TestTask2::new);
         if(gamepadEx1.getButton(BetterGamepad.Buttons.TRIANGLE).wasPressed())
-            Scheduler.schedule(Intake::start);
+            Scheduler.now(Intake::start);
     }
 
     @Override

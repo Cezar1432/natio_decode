@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.tasks.command_based.core;
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 
+import org.firstinspires.ftc.teamcode.robot.Chassis;
+import org.firstinspires.ftc.teamcode.tasks.auto_task.LineToConstantAsync;
 import org.firstinspires.ftc.teamcode.tasks.command_based.command_types.Wait;
 
 import java.util.LinkedList;
@@ -20,6 +23,10 @@ public class Command {
         list = new LinkedList<>();
         factory= new LinkedList<>();
 
+    }
+    public Command setChassis(Follower f){
+        this.f= f;
+        return this;
     }
     public Command(Follower f){this.f =f; list = new LinkedList<>();
 factory= new LinkedList<>();
@@ -103,6 +110,12 @@ factory= new LinkedList<>();
         if(result)
             list.removeFirst();
 
+    }
+    public Command lineToConstantAsync(Pose p){
+        if(f== null)
+            throw new IllegalArgumentException("Follower not set");
+        list.addLast(new LineToConstantAsync(f, p));
+        return this;
     }
 
 
