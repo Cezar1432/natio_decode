@@ -83,11 +83,11 @@ public class MySwerve extends CustomDrivetrain {
             rotationVector.rotateVector(Math.PI / 2);
 
             podVectors[i] = translationVector.plus(rotationVector);
-            if (constants.getZeroPowerBehavior() == SwerveConstants.ZeroPowerBehavior.X_LOCK
-                    && zeroTrans && zeroRotation) {
-                rotationVector.rotateVector(-Math.PI / 2);
-                podVectors[i] = rotationVector;
-            }
+//            if (constants.getZeroPowerBehavior() == SwerveConstants.ZeroPowerBehavior.X_LOCK
+//                    && zeroTrans && zeroRotation) {
+//                rotationVector.rotateVector(-Math.PI / 2);
+//                podVectors[i] = rotationVector;
+//            }
         }
 
         // finding if any vector has magnitude > maxPowerScaling

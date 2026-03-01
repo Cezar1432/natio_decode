@@ -20,6 +20,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.pedropathing.PedroConstants;
+import org.firstinspires.ftc.teamcode.robot.subsystem.Intake;
+import org.firstinspires.ftc.teamcode.robot.subsystem.Spindexer;
+import org.firstinspires.ftc.teamcode.robot.subsystem.Turret;
 import org.firstinspires.ftc.teamcode.util.wrappers.BetterCRServo;
 import org.firstinspires.ftc.teamcode.util.wrappers.BetterMotor;
 import org.firstinspires.ftc.teamcode.util.wrappers.BetterMotorEx;
@@ -104,8 +107,13 @@ public class Robot {
 
     }
     private void assignHardware(){
-
-
+        Turret.turret1= turret1;
+        Turret.turret2= turret2;
+        Spindexer.s1 = indexer1;
+        Spindexer.s2 = indexer2;
+        Intake.motor = intake;
+        Spindexer.breakBeam = breakBeam;
+        Spindexer.colorSensor= colorSensor;
     }
 
     public void initializeServos(){
@@ -135,7 +143,6 @@ public class Robot {
 
 
         ll= hm.get(Limelight3A.class, "ll");
-        int pipeline= a== Alliance.RED ? 2 : 9;
         ll.pipelineSwitch(2);
         ll.setPollRateHz(100);
         ll.start();

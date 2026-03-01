@@ -36,6 +36,9 @@ public class BetterGamepad {
 
 
     }
+    public enum Type{
+        INSTANT, NON_INSTANT
+    }
     public class Button{
         Buttons button;
         BooleanSupplier pressed;
@@ -89,11 +92,29 @@ public class BetterGamepad {
                     break;
             }
         }
+        public boolean now= true;
+        Type type= Type.NON_INSTANT;
         public void whenPressed(Supplier<Task> s){
             this.s= s;
+            type= Type.NON_INSTANT;
         }
+
+        public void whenPressed(Supplier<Task> s, boolean now){
+            this.s= s;
+            this.now    = now;
+            type= Type.NON_INSTANT;
+        }
+
+
+
         public void whenPressed(InstantTask t){
             this.s= ()->()-> {t.run(); return true;};
+            type= Type.INSTANT;
+        }
+        public void whenPressed(InstantTask t, boolean now){
+            this.s= ()->()-> {t.run(); return true;};
+            this.now= now   ;
+            type= Type.INSTANT;
         }
 
         public boolean wasPressed(){
@@ -121,7 +142,15 @@ public class BetterGamepad {
         for(Button button: buttons){
             if(button.s!= null){
                 if(button.wasPressed()) {
-                    Scheduler.add(button.s);
+                    if(button.type.equals(Type.NON_INSTANT)) {
+                        if (button.now)
+                            Scheduler.now(button.s);
+                        else
+                            Scheduler.schedule(button.s);
+                    }
+                    else{
+                        button.s.get().Run();
+                    }
                 }
             }
         }

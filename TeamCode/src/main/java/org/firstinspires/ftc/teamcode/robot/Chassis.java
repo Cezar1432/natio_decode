@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 import com.arcrobotics.ftclib.controller.PIDFController;
-import com.pedropathing.ftc.drivetrains.Swerve;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.Vector;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -39,7 +38,7 @@ public class Chassis {
     }
 
     boolean robotCentric;
-    public Chassis robotCentric(boolean robotCentric){
+    public Chassis fieldCentric(boolean robotCentric){
         this.robotCentric= robotCentric;
         return this;
     }

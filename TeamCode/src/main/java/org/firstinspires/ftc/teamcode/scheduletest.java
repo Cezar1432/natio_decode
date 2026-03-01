@@ -6,12 +6,10 @@ import com.qualcomm.robotcore.hardware.DcMotorControllerEx;
 
 import org.firstinspires.ftc.teamcode.robot.subsystem.Intake;
 import org.firstinspires.ftc.teamcode.tasks.command_based.core.Scheduler;
-import org.firstinspires.ftc.teamcode.tasks.command_based.core.Task;
 import org.firstinspires.ftc.teamcode.tasks.seasonal_tasks.TestTask;
 import org.firstinspires.ftc.teamcode.tasks.seasonal_tasks.TestTask2;
 import org.firstinspires.ftc.teamcode.util.BetterOpMode;
 import org.firstinspires.ftc.teamcode.util.wrappers.BetterGamepad;
-import org.firstinspires.ftc.teamcode.util.wrappers.BetterMotor;
 import org.firstinspires.ftc.teamcode.util.wrappers.BetterMotorEx;
 @TeleOp
 public class scheduletest extends BetterOpMode {
@@ -39,9 +37,9 @@ public class scheduletest extends BetterOpMode {
     @Override
     public void active_loop() {
         if(gamepadEx1.getButton(BetterGamepad.Buttons.CIRCLE).wasPressed())
-            Scheduler.add(TestTask2::new);
+            Scheduler.schedule(TestTask2::new);
         if(gamepadEx1.getButton(BetterGamepad.Buttons.TRIANGLE).wasPressed())
-            Scheduler.add(Intake::start);
+            Scheduler.schedule(Intake::start);
     }
 
     @Override

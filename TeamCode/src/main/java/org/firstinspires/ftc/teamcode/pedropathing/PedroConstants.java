@@ -71,6 +71,7 @@ public class PedroConstants {
     public static SwerveConstants swerveConstants = new SwerveConstants()
 //             .velocity(83)
 //            .zeroPowerBehavior(SwerveConstants.ZeroPowerBehavior.IGNORE_ANGLE_CHANGES)
+            .zeroPowerBehavior(SwerveConstants.ZeroPowerBehavior.IGNORE_ANGLE_CHANGES)
             .useBrakeModeInTeleOp(false);
 
     // F - front: .130, back: .190
@@ -83,8 +84,8 @@ public class PedroConstants {
     private static double kFBack = 0.0190;
 
 
-    private static double dtLength = 26.8/2;
-    private static double dtWidth = 34.4/2;
+    public static double dtLength = 26.8/2;
+    public static double dtWidth = 34.4/2;
 
     public static CoaxialPod leftFront(HardwareMap hardwareMap) {
         CoaxialPod pod = new CoaxialPod(hardwareMap, "sm1", "ss2", "se2",

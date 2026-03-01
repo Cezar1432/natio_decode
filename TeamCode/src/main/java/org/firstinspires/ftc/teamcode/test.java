@@ -36,7 +36,7 @@ public class  test extends LinearOpMode {
                 ,()-> -gamepad1.left_stick_x
                 ,()-> -gamepad1.right_stick_x)
                 .setLimiters(6,6,20)
-                .robotCentric(true)
+                .fieldCentric(true)
                 .startTeleOpDrive(true);
         waitForStart();
         //follower.startTeleOpDrive();

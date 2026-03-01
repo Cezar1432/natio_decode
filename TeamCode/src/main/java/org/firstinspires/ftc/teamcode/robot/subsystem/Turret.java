@@ -14,7 +14,7 @@ public class Turret {
 
     static double NEUTRAL_POSITION= .5;
     public static double x, y, heading, xCorner, yCorner, dist, fieldRelative, robotRelative, turretRelative;
-    private static final double FIELD_LENGTH= 3.65, launchTime= .2,goalCircleRasius= .18;
+    public static final double FIELD_LENGTH= 3.65, launchTime= .2,goalCircleRasius= .18;
     public static BetterServoEx turret1, turret2;
 
     public static void update(){
@@ -24,16 +24,6 @@ public class Turret {
             x= robotPose.getX();
             y= robotPose.getY();
             heading= robotPose.getHeading();
-
-            double xVelocity= Robot.odo.getVelX(DistanceUnit.METER);
-            double yVelocity= Robot.odo.getVelY(DistanceUnit.METER);
-            double hVelocity= Robot.odo.getHeadingVelocity(UnnormalizedAngleUnit.RADIANS);
-
-            x+= launchTime * xVelocity;
-            y+= launchTime * yVelocity;
-            heading= MathStuff.normalizeRadians(heading + launchTime * hVelocity);
-
-
 
             yCorner= FIELD_LENGTH- y;
             xCorner= Robot.a== Alliance.RED ? FIELD_LENGTH- x : x;
