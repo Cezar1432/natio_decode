@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.robot.Alliance;
 import org.firstinspires.ftc.teamcode.robot.Chassis;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Intake;
+import org.firstinspires.ftc.teamcode.robot.subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Spindexer;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Turret;
 import org.firstinspires.ftc.teamcode.tasks.seasonal_tasks.Spit;
@@ -78,6 +79,7 @@ public abstract class TeleOp extends BetterOpMode {
         drive.update();
         Spindexer.update();
         Turret.update();
+        Shooter.update();
         telemetry.addData("X", Robot.odo.getPosX(DistanceUnit.METER));
         telemetry.addData("Y", Robot.odo.getPosY(DistanceUnit.METER));
         telemetry.addData("heading",Robot.odo.getHeading(AngleUnit.RADIANS));
