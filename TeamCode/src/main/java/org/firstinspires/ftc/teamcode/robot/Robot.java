@@ -32,6 +32,8 @@ import org.firstinspires.ftc.teamcode.util.wrappers.BetterServoEx;
 import org.firstinspires.ftc.teamcode.util.wrappers.BreakBeam;
 import org.firstinspires.ftc.teamcode.util.wrappers.EvenBetterServo;
 import org.firstinspires.ftc.teamcode.util.wrappers.LazyPinpoint;
+import org.firstinspires.ftc.teamcode.util.wrappers.Motor;
+import org.firstinspires.ftc.teamcode.util.wrappers.MotorEx;
 import org.firstinspires.ftc.teamcode.util.wrappers.colorsensor.BetterColorSensor;
 import org.openftc.easyopencv.OpenCvCamera;
 
@@ -45,7 +47,7 @@ public class Robot {
     DcMotorControllerEx exExpansionHubMotors;
     public volatile BetterMotor turret;
     public BetterMotorEx intake;
-    public BetterMotorEx shooter, shooter2;
+    public MotorEx shooter, shooter2;
     public DcMotorController controlHubMotors, expansionHubMotors;
     public ServoController controlHubServos, expansionHubServos;
     public BetterServo indexer1, indexer2;
@@ -101,11 +103,24 @@ public class Robot {
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        shooter= hm.get(BetterMotorEx.class, "shooter");
 //        shooter2= hm.get(BetterMotorEx.class, "shooter2");
-        shooter = new BetterMotorEx(expansionHubMotors, 2);
-        shooter2 = new BetterMotorEx(expansionHubMotors, 3);
-        shooter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+     //   shooter = new BetterMotorEx(expansionHubMotors, 2);
+      //  shooter2 = new BetterMotorEx(expansionHubMotors, 3);
+        shooter2 = new MotorEx(hm,"shooter2", Motor.GoBILDA.BARE).setCachingTolerance(0.01);
+        shooter2.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        shooter2.setRunMode(Motor.RunMode.VelocityControl);
+        shooter2.ACHIEVABLE_MAX_TICKS_PER_SECOND = 1900;
+        shooter2.encoder.setDirection(Motor.Direction.REVERSE);
+
+        shooter = new MotorEx(hm,"shooter", Motor.GoBILDA.BARE).setCachingTolerance(0.01).setInverted(true);
+        shooter.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        shooter.setRunMode(Motor.RunMode.VelocityControl);
+        shooter.ACHIEVABLE_MAX_TICKS_PER_SECOND = 1900;
+        shooter.encoder.setDirection(Motor.Direction.REVERSE);
+
+       // shooter2 = new BetterMotorEx(expansionHubMotors, 3);
+//        shooter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
     }
@@ -147,8 +162,7 @@ public class Robot {
         }
         colorSensor= hm.get(BetterColorSensor.class, "color sensor");
         breakBeam= new BreakBeam(controller, 1);
-
-
+        voltageSensor= hm.voltageSensor.iterator().next();
         ll= hm.get(Limelight3A.class, "ll");
         ll.pipelineSwitch(2);
         ll.setPollRateHz(100);

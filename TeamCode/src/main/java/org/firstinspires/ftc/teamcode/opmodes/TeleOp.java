@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystem.Spindexer;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Turret;
 import org.firstinspires.ftc.teamcode.tasks.seasonal_tasks.ShootForta;
 import org.firstinspires.ftc.teamcode.tasks.seasonal_tasks.Spit;
+import org.firstinspires.ftc.teamcode.tuning.MotorExTest;
 import org.firstinspires.ftc.teamcode.util.BetterOpMode;
 import org.firstinspires.ftc.teamcode.util.MultipleTelemetry;
 import org.firstinspires.ftc.teamcode.util.wrappers.BetterGamepad;
@@ -80,8 +81,8 @@ public abstract class TeleOp extends BetterOpMode {
     public void active_loop() {
         Shooter.servo.setPosition(Shooter.servo.getPosition() + 0.0025 *
                 ((gamepadEx1.getDouble(BetterGamepad.Trigger.RIGHT_TRIGGER) - gamepadEx1.getDouble(BetterGamepad.Trigger.LEFT_TRIGGER))));
-        Turret.setNeutralPosition(0.5);
-        Shooter.setVelocity(Shooter.vel);
+        //Turret.setNeutralPosition(0.5);
+        Shooter.setVelocity(MotorExTest.VELOCITY);
         robot.update();
         telemetry.update();
         drive.update();

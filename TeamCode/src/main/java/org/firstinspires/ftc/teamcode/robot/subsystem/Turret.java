@@ -43,12 +43,11 @@ public class Turret {
                 fieldRelative = 180 - fieldRelative;
             robotRelative = normalize(fieldRelative - heading);
             turretRelative = normalize(robotRelative - 180);
-
             robotRelative = Robot.a == Alliance.RED ? robotRelative : -robotRelative;
             turretRelative+= 180;
             double finalPos= turretRelative/360;
-//            turret1.setPosition(finalPos);
-//            turret2.setPosition(finalPos);
+            turret1.setPosition(finalPos);
+            turret2.setPosition(finalPos);
 
 
         }
