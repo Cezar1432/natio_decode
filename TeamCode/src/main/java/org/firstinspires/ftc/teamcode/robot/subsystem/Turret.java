@@ -17,6 +17,11 @@ public class Turret {
     public static final double FIELD_LENGTH= 3.65, launchTime= .2,goalCircleRasius= .18;
     public static BetterServoEx turret1, turret2;
 
+    public static void setNeutralPosition(double pos){
+        turret1.setPosition(pos);
+        turret2.setPosition(pos);
+    }
+
     public static void update(){
         Pose robotPose= Robot.robotPose;
         if (robotPose.getX() != 0 && robotPose.getY() != 0) {
@@ -42,8 +47,8 @@ public class Turret {
             robotRelative = Robot.a == Alliance.RED ? robotRelative : -robotRelative;
             turretRelative+= 180;
             double finalPos= turretRelative/360;
-            turret1.setPosition(finalPos);
-            turret2.setPosition(finalPos);
+//            turret1.setPosition(finalPos);
+//            turret2.setPosition(finalPos);
 
 
         }
@@ -55,4 +60,3 @@ public class Turret {
     }
 
 }
-

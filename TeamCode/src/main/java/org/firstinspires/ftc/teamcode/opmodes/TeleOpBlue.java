@@ -12,8 +12,8 @@ public class TeleOpBlue extends TeleOp {
 
     @Override
     public void setDriveSuppliers() {
-        super.forward= ()-> gamepadEx1.getDouble(BetterGamepad.Trigger.LEFT_Y);
-        super.strafe= ()-> gamepadEx1.getDouble(BetterGamepad.Trigger.LEFT_X);
+        super.forward= ()-> -gamepadEx1.getDouble(BetterGamepad.Trigger.LEFT_Y);
+        super.strafe= ()-> -gamepadEx1.getDouble(BetterGamepad.Trigger.LEFT_X);
         super.rotation= ()-> -gamepadEx1.getDouble(BetterGamepad.Trigger.RIGHT_X);
     }
 }

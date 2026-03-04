@@ -21,6 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.pedropathing.PedroConstants;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Intake;
+import org.firstinspires.ftc.teamcode.robot.subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Spindexer;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Turret;
 import org.firstinspires.ftc.teamcode.util.wrappers.BetterCRServo;
@@ -44,11 +45,11 @@ public class Robot {
     DcMotorControllerEx exExpansionHubMotors;
     public volatile BetterMotor turret;
     public BetterMotorEx intake;
-    public DcMotorEx shooter, shooter2;
+    public BetterMotorEx shooter, shooter2;
     public DcMotorController controlHubMotors, expansionHubMotors;
     public ServoController controlHubServos, expansionHubServos;
     public BetterServo indexer1, indexer2;
-    public EvenBetterServo hood;
+    public BetterServo hood;
 
     public BreakBeam breakBeam;
 
@@ -98,8 +99,10 @@ public class Robot {
 
         intake= new BetterMotorEx(expansionHubMotors, 0);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        shooter= hm.get(DcMotorEx.class, "shooter");
-        shooter2= hm.get(DcMotorEx.class, "shooter2");
+//        shooter= hm.get(BetterMotorEx.class, "shooter");
+//        shooter2= hm.get(BetterMotorEx.class, "shooter2");
+        shooter = new BetterMotorEx(expansionHubMotors, 2);
+        shooter2 = new BetterMotorEx(expansionHubMotors, 3);
         shooter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -114,6 +117,10 @@ public class Robot {
         Intake.motor = intake;
         Spindexer.breakBeam = breakBeam;
         Spindexer.colorSensor= colorSensor;
+        Shooter.motor1= shooter;
+        Shooter.motor2= shooter2;
+        Shooter.servo= hood;
+
     }
 
     public void initializeServos(){
@@ -124,7 +131,7 @@ public class Robot {
         turret2.setPwmRange(new PwmControl.PwmRange(500, 2500));
         indexer1= new BetterServo(expansionHubServos, 0).setMaxDegrees(1065);
         indexer2= new BetterServo(expansionHubServos, 1).setMaxDegrees(1065);
-        hood= new EvenBetterServo(expansionHubServos, 2);
+        hood= new BetterServo(expansionHubServos, 2);
 
     }
 

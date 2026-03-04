@@ -43,6 +43,8 @@ public class Colors {
         Balls finalColor= Balls.NONE;
         double diff= Double.POSITIVE_INFINITY;
         for(Balls b: Balls.values()){
+            if(b.equals(Balls.NONE))
+                continue;
             double locDiff= getColorDistance(b.color, c);
             if(locDiff< diff){
                 diff= locDiff;

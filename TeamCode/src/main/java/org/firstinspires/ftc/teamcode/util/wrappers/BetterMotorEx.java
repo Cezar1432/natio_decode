@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.util.wrappers;
 
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorControllerEx;
@@ -16,7 +17,7 @@ import org.firstinspires.ftc.teamcode.util.math.PDSFController;
 
 @DeviceProperties(
         xmlTag = "betterMotorEx",
-        name = "Better Motor Ex",
+        name = "BetterMotorEx",
         description = "generic motor",
         builtIn = false
 )
@@ -69,123 +70,17 @@ public class BetterMotorEx extends DcMotorImplEx implements DcMotorEx, HardwareD
         lastPower= 0;
         runMode= RunMode.RUN;
     }
-
-
-    public double getRPM(){
-
-        return RPM;
-    }
-
-
-    double BULLSHIT_ERROR= 1.2;
-    public void setRPM(double rpm){
-        if(ticksPerRevolution== 0)
-            throw new RuntimeException("Ticks rer revolution not set!");
-        targetRPM= rpm;
-        runMode= RunMode.VELOCITY_PID;
-    }
-
-    public void setTicksPerRevolution(double ticks){
-    }
-    double cnt  = 0,sum  = 0, avg;
-
-    public PDSFController velController= new PDSFController(0,0,0,0);
-    public PDSFController pidController= new PDSFController(0,0,0,0);
-
-    double targetRPM;
-
-    public void setVelocityCoefficients(double p, double d){
-        velController.setCoefficients(new PDSFCoefficients(p,d,0,0));
-    }
-    public void setPIDControllerCoefficients(double p, double d, double s, double f){
-        pidController.setCoefficients(new PDSFCoefficients(p,d,s,f));
-    }
-
-
-
-    public void setTargetPosition(int targetPosition){
-        runMode= RunMode.PID;
-        this.targetPosition= targetPosition;
-    }
-    int reversed = 1;
-    public enum Direction{
-        FORWARD, BACKWARDS
-    }
-    public void changeDirection(Direction dir){
-        if(dir== Direction.FORWARD)
-            reversed= 1;
-        else
-            reversed= -1;
-    }
-
-    double lastTime = 0;
-    int targetPosition = 0;
-
-    double RPM= 0;
-    double lastPower= 0;
-    double lastTicks= 0;
-    public void update(){
-
-
-        double deltaTime = System.nanoTime()- lastTime;
-        lastTime= System.nanoTime();
-        deltaTime/= 1e9;
-
-        double currentTicks= getCurrentPosition();
-        double deltaTicks = currentTicks-  lastTicks;
-        lastTicks= currentTicks;
-        velocity= deltaTicks/deltaTime;
-        double deltaRotations= deltaTicks / ticksPerRevolution;
-        RPM= deltaRotations/ deltaTime;
-        RPM= RPM* 60;
-
-
-//        double currentTicks= getCurrentPosition();
-//        long  currentTime=(System.nanoTime()- startTime)/1e9;
-//        if(currentTime- lastTime> 1e9){
-//            double deltaTime= currentTime- lastTime;
-//            lastTime= currentTime;
-//            double deltaTicks= currentTicks- lastTicks;
-//            lastTicks= currentTicks;
-//            double deltaRotations= deltaTicks/ ticksPerRevolution;
-//            RPM= deltaRotations/(deltaTime * 1e9);
-//            RPM*= 60;
-//        }
-        if(runMode== RunMode.PID){
-            super.setPower(pidController.calculate(getCurrentPosition(), targetPosition));
-            lastPower= 0;
+    private double lastPower= 0;
+    PIDFController controller;
+    double maxVelocity;
+    public void set(double output){
+        if(runMode.equals(RunMode.VELOCITY_PID)){
+            double power= output + controller.calculate(getVelocity(), output * maxVelocity);
+            this.setPower(power);
         }
-        else
-        if(runMode==  RunMode.VELOCITY_PID){
-            double power= lastPower+ velController.calculate(RPM, targetRPM);
-            super.setPower(power);
-            lastPower= power;
-        }
-
-
-    }
-    double maxRPM= 0;
-    public void setMaxRPM(double maxRPM){
-        this.maxRPM= maxRPM;
     }
 
-    double ticksThreshold= 2000;
-    public void setTicksThreshold(double ticksThreshold){
-        this.ticksThreshold = ticksThreshold;
-    }
 
-    double RPMThreshold= 100;
-    public void RPMThreshold(double RPMThreshold){
-        this.RPMThreshold= RPMThreshold;
-    }
-
-    @Override
-    public boolean isBusy(){
-        if(runMode== RunMode.PID)
-            return Math.abs(targetPos- getCurrentPosition())< ticksThreshold;
-
-        return Math.abs(targetRPM- RPM)< RPMThreshold;
-    }
 
     public void resetEncoder(){
         setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

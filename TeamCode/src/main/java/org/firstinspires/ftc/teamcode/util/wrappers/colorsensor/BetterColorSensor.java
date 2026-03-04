@@ -43,7 +43,7 @@ public class BetterColorSensor extends RevColorSensorV3 implements HardwareDevic
     }
 
     public Balls getColorSeenBySensor(){
-        Color output= new Color(this.red(), this.green(), this.blue());
+         Color output = new Color(this.red(), this.green(), this.blue());
         return getColor(output);
     }
 

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.util.wrappers;
 
 import androidx.annotation.NonNull;
 
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -34,6 +35,7 @@ public class BetterMotor extends DcMotorImplEx implements DcMotorEx, HardwareDev
     private double lastSetPower = 69;
     private static double MAX_VELOCITY;
     private Direction direction;
+
 
     double cachingTolerance;
     public BetterMotor(DcMotorController controller, int portNumber) {
@@ -90,7 +92,6 @@ public class BetterMotor extends DcMotorImplEx implements DcMotorEx, HardwareDev
             lastSetPower= power;
         }
     }
-
     public BetterMotor setCachingTolerance(double tolerance){
         this.cachingTolerance= tolerance;
 
@@ -102,9 +103,13 @@ public class BetterMotor extends DcMotorImplEx implements DcMotorEx, HardwareDev
     public boolean isStill(){
         return Math.abs(this.getVelocity())<1e-2;
     }
+
     public void resetEncoder(){
         controller.setMotorMode(this.getPortNumber(), RunMode.STOP_AND_RESET_ENCODER);
         controller.setMotorMode(this.getPortNumber(), RunMode.RUN_WITHOUT_ENCODER);
     }
 
-}
+    public BetterMotor setInverted(boolean isInverted) {
+        this.setDirection(isInverted ? DcMotor.Direction.REVERSE : DcMotor.Direction.FORWARD);
+        return this;
+    }}

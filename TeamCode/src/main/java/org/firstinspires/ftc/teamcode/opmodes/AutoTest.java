@@ -17,8 +17,7 @@ public class AutoTest extends BetterOpMode {
         f= PedroConstants.createFollower(hardwareMap);
         command= new Command()
                 .setChassis(f)
-                .lineToConstantAsync(new Pose(72, 72))
-                .lineToConstantAsync(new Pose(36,36));
+                .lineToConstantAsync(new Pose(72, 72));
     }
 
     @Override

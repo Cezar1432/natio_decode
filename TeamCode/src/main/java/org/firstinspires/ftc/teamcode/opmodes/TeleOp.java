@@ -9,8 +9,10 @@ import org.firstinspires.ftc.teamcode.robot.Alliance;
 import org.firstinspires.ftc.teamcode.robot.Chassis;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Intake;
+import org.firstinspires.ftc.teamcode.robot.subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Spindexer;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Turret;
+import org.firstinspires.ftc.teamcode.tasks.seasonal_tasks.ShootForta;
 import org.firstinspires.ftc.teamcode.tasks.seasonal_tasks.Spit;
 import org.firstinspires.ftc.teamcode.util.BetterOpMode;
 import org.firstinspires.ftc.teamcode.util.MultipleTelemetry;
@@ -45,18 +47,21 @@ public abstract class TeleOp extends BetterOpMode {
         gamepadEx1.getButton(BetterGamepad.Buttons.CROSS).whenPressed(Intake::toggle, BetterGamepad.Type.PARALLEL);
         gamepadEx1.getButton(BetterGamepad.Buttons.TOUCHPAD)
                 .whenPressed(()->{
-                    double x= this.a== Alliance.BLUE ? Turret.FIELD_LENGTH - PedroConstants.dtWidth/100 : PedroConstants.dtWidth/100;
-                    double y= PedroConstants.dtLength/100;
-                    double heading= Math.toRadians(90);
-                    Robot.odo.setPosX(x, DistanceUnit.METER);
-                    Robot.odo.setPosY(y, DistanceUnit.METER);
-                    Robot.odo.setHeading(heading, AngleUnit.RADIANS);
-                }
-                ,
+                            double x= this.a== Alliance.BLUE ? Turret.FIELD_LENGTH - PedroConstants.dtWidth/100 : PedroConstants.dtWidth/100;
+                            double y= PedroConstants.dtLength/100;
+                            double heading= Math.toRadians(90);
+                            Robot.odo.setPosX(x, DistanceUnit.METER);
+                            Robot.odo.setPosY(y, DistanceUnit.METER);
+                            Robot.odo.setHeading(heading, AngleUnit.RADIANS);
+                        }
+                        ,
                         BetterGamepad.Type.PARALLEL);
 
         gamepadEx1.getButton(BetterGamepad.Buttons.TRIANGLE)
                 .whenPressed(Spit::new, BetterGamepad.Type.PARALLEL);
+
+        gamepadEx1.getButton(BetterGamepad.Buttons.RIGHT_BUMPER)
+                .whenPressed(ShootForta::new, BetterGamepad.Type.PARALLEL);
 
 
     }
@@ -73,19 +78,19 @@ public abstract class TeleOp extends BetterOpMode {
 
     @Override
     public void active_loop() {
+        Shooter.servo.setPosition(Shooter.servo.getPosition() + 0.0025 *
+                ((gamepadEx1.getDouble(BetterGamepad.Trigger.RIGHT_TRIGGER) - gamepadEx1.getDouble(BetterGamepad.Trigger.LEFT_TRIGGER))));
+        Turret.setNeutralPosition(0.5);
+        Shooter.setVelocity(Shooter.vel);
         robot.update();
         telemetry.update();
         drive.update();
         Spindexer.update();
         Turret.update();
-        telemetry.addData("X", Robot.odo.getPosX(DistanceUnit.METER));
-        telemetry.addData("Y", Robot.odo.getPosY(DistanceUnit.METER));
-        telemetry.addData("heading",Robot.odo.getHeading(AngleUnit.RADIANS));
-        telemetry.addData("turret s1 pos", Turret.turret1.getPosition());
-        telemetry.addData("turret s2 pos", Turret.turret2.getPosition());
-        telemetry.addData("turret Relative", Turret.turretRelative);
-        telemetry.addData("state", Spindexer.breakBeam.getBeamState());
-        //telemetry.update();
+        gamepadEx1.update();
+        telemetry.addData("dist", Turret.dist);
+        telemetry.addData("hood", Shooter.servo.getPosition());
+        telemetry.addData("velocity", Shooter.motor1.getVelocity());
     }
 
     @Override
