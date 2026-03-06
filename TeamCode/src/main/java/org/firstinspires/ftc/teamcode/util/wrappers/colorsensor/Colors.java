@@ -19,8 +19,8 @@ public class Colors {
         ,
         NONE(new Color(0,0,0), "None");
 
-        final Color color;
-        final String name;
+        public final Color color;
+        public final String name;
 
         Balls(Color color, String name){
             this.color= color;

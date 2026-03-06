@@ -96,28 +96,27 @@ public class Robot {
         exExpansionHubMotors= hm.get(DcMotorControllerEx.class, "Expansion Hub 2");
         controller = hm.get(DigitalChannelController.class, "Control Hub");
     }
-    public void initializeMotors(){
-
+    public void initializeMotors() {
 
         intake= new BetterMotorEx(expansionHubMotors, 0);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        shooter= hm.get(BetterMotorEx.class, "shooter");
 //        shooter2= hm.get(BetterMotorEx.class, "shooter2");
-     //   shooter = new BetterMotorEx(expansionHubMotors, 2);
-      //  shooter2 = new BetterMotorEx(expansionHubMotors, 3);
-        shooter2 = new MotorEx(hm,"shooter2", Motor.GoBILDA.BARE).setCachingTolerance(0.01);
+        //   shooter = new BetterMotorEx(expansionHubMotors, 2);
+        //  shooter2 = new BetterMotorEx(expansionHubMotors, 3);
+        shooter2 = new MotorEx(hm,"shooter2", Motor.GoBILDA.BARE).setCachingTolerance(0.01).setInverted(true);
         shooter2.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         shooter2.setRunMode(Motor.RunMode.VelocityControl);
         shooter2.ACHIEVABLE_MAX_TICKS_PER_SECOND = 1900;
-        shooter2.encoder.setDirection(Motor.Direction.REVERSE);
+        shooter2.encoder.setDirection(Motor.Direction.FORWARD);
 
-        shooter = new MotorEx(hm,"shooter", Motor.GoBILDA.BARE).setCachingTolerance(0.01).setInverted(true);
+        shooter = new MotorEx(hm,"shooter", Motor.GoBILDA.BARE).setCachingTolerance(0.01).setInverted(false);
         shooter.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         shooter.setRunMode(Motor.RunMode.VelocityControl);
         shooter.ACHIEVABLE_MAX_TICKS_PER_SECOND = 1900;
-        shooter.encoder.setDirection(Motor.Direction.REVERSE);
+        shooter.encoder.setDirection(Motor.Direction.FORWARD);
 
-       // shooter2 = new BetterMotorEx(expansionHubMotors, 3);
+        // shooter2 = new BetterMotorEx(expansionHubMotors, 3);
 //        shooter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

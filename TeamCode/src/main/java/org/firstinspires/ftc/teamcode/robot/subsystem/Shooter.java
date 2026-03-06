@@ -46,9 +46,9 @@ public class Shooter {
 
     public SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(fS,fV,fA);
     public PIDController veloController = new PIDController(vP,vI,vD);
-    public static double vP=5,vI=0,vD=0.1,fS=200,fV=1.5,fA=0;
+    //  public static double vP=5,vI=0,vD=0.1,fS=200,fV=1.5,fA=0;
+    public static double vP=5.3,vI=0,vD=0.1,fS=200,fV=1.68,fA=0;
     public static void setCoefs(){
-        shootercoeffs= new PIDFCoefficients(p,i,d,f);
         motor1.setVeloCoefficients(vP,vI,vD);
         motor1.setFeedforwardCoefficients(fS,fV,fA);
         motor2.setVeloCoefficients(vP,vI,vD);
@@ -61,15 +61,14 @@ public class Shooter {
 
     public static double power= 1;
 
-    public static double voltageThreshold = 11.2;
+    public static double voltageThreshold = 10.1;
     public static void setVelocity(double vel){
-        setCoefs();
-        double voltage = Robot.voltageSensor.getVoltage();
-        double coeff = (voltage < voltageThreshold) ? voltageThreshold / voltage : 1;
-        vel *= coeff;
-        motor1.setVelocity(vel);
-        motor2.setVelocity(vel);
-
+            setCoefs();
+            double voltage = Robot.voltageSensor.getVoltage();
+            double coeff = (voltage < voltageThreshold) ? voltageThreshold / voltage : 1;
+            vel *= coeff;
+            motor1.setVelocity(vel);
+            motor2.setVelocity(vel);
     }
     public static boolean wereCoeffsSet = false;
     public static void setVelocity2(double vel){

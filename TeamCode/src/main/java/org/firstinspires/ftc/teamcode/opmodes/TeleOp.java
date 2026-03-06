@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import static org.firstinspires.ftc.teamcode.robot.subsystem.Spindexer.sorting;
+
 import com.bylazar.telemetry.PanelsTelemetry;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.pedropathing.PedroConstants;
@@ -18,6 +21,8 @@ import org.firstinspires.ftc.teamcode.tuning.MotorExTest;
 import org.firstinspires.ftc.teamcode.util.BetterOpMode;
 import org.firstinspires.ftc.teamcode.util.MultipleTelemetry;
 import org.firstinspires.ftc.teamcode.util.wrappers.BetterGamepad;
+import org.firstinspires.ftc.teamcode.util.wrappers.colorsensor.Colors;
+
 import java.util.function.DoubleSupplier;
 
 public abstract class TeleOp extends BetterOpMode {
@@ -63,7 +68,15 @@ public abstract class TeleOp extends BetterOpMode {
 
         gamepadEx1.getButton(BetterGamepad.Buttons.RIGHT_BUMPER)
                 .whenPressed(ShootForta::new, BetterGamepad.Type.PARALLEL);
-
+        gamepadEx1.getButton(BetterGamepad.Buttons.CIRCLE)
+                .whenPressed(Spindexer::clearAll, BetterGamepad.Type.PARALLEL);
+        gamepadEx1.getButton(BetterGamepad.Buttons.DPAD_LEFT)
+                .whenPressed(() -> {
+                    if( !sorting )
+                        sorting = true;
+                    else
+                        sorting = false;
+                }, BetterGamepad.Type.PARALLEL);
 
     }
 
@@ -82,7 +95,7 @@ public abstract class TeleOp extends BetterOpMode {
         Shooter.servo.setPosition(Shooter.servo.getPosition() + 0.0025 *
                 ((gamepadEx1.getDouble(BetterGamepad.Trigger.RIGHT_TRIGGER) - gamepadEx1.getDouble(BetterGamepad.Trigger.LEFT_TRIGGER))));
         //Turret.setNeutralPosition(0.5);
-        Shooter.setVelocity(MotorExTest.VELOCITY);
+       Shooter.setVelocity(MotorExTest.VELOCITY);
         robot.update();
         telemetry.update();
         drive.update();
@@ -92,6 +105,10 @@ public abstract class TeleOp extends BetterOpMode {
         telemetry.addData("dist", Turret.dist);
         telemetry.addData("hood", Shooter.servo.getPosition());
         telemetry.addData("velocity", Shooter.motor1.getVelocity());
+        telemetry.addData("corrected vel", Shooter.motor1.getCorrectedVelocity());
+
+        if( sorting )
+            telemetry.addData("distance to ball", Spindexer.dist);
     }
 
     @Override

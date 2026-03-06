@@ -18,7 +18,7 @@ public class MotorExTest extends LinearOpMode {
     MotorEx m1,m2;
     List<LynxModule> hubs;
     public static double VELOCITY = 0;
-    public static double vP=0,vI=0,vD=0,fS=0,fV=0,fA=0;
+    public static double vP=5.3,vI=0,vD=0.1,fS=200,fV=1.8,fA=0;
     @Override
     public void runOpMode() throws InterruptedException {
         hubs= hardwareMap.getAll(LynxModule.class);
@@ -31,8 +31,8 @@ public class MotorExTest extends LinearOpMode {
         m2.setRunMode(Motor.RunMode.VelocityControl);
         m1.ACHIEVABLE_MAX_TICKS_PER_SECOND = 1900;
         m2.ACHIEVABLE_MAX_TICKS_PER_SECOND = 1900;
-        m1.encoder.setDirection(Motor.Direction.REVERSE);
-        m2.encoder.setDirection(Motor.Direction.REVERSE);
+        m1.encoder.setDirection(Motor.Direction.FORWARD);
+        m2.encoder.setDirection(Motor.Direction.FORWARD);
 //        m2.setRunMode(Motor.RunMode.RawPower);
 //        m1.setRunMode(Motor.RunMode.RawPower);
         waitForStart();
