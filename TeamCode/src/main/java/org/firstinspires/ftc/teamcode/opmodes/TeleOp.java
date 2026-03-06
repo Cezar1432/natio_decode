@@ -77,7 +77,8 @@ public abstract class TeleOp extends BetterOpMode {
                     else
                         sorting = false;
                 }, BetterGamepad.Type.PARALLEL);
-
+        gamepadEx1.getButton(BetterGamepad.Buttons.DPAD_DOWN)
+                .whenPressed(Shooter::setKalmanCoefs, BetterGamepad.Type.PARALLEL);
     }
 
     @Override
@@ -105,6 +106,7 @@ public abstract class TeleOp extends BetterOpMode {
         telemetry.addData("dist", Turret.dist);
         telemetry.addData("hood", Shooter.servo.getPosition());
         telemetry.addData("velocity", Shooter.motor1.getVelocity());
+        telemetry.addData("kalman estimate", Shooter.est);
         telemetry.addData("corrected vel", Shooter.motor1.getCorrectedVelocity());
 
         if( sorting )

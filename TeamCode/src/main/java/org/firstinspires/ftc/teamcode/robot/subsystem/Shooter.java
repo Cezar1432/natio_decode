@@ -25,7 +25,8 @@ public class Shooter {
 
     public static final double a1 = -0.0641147, b1 = 0.390703, c1 = 0.18375;
     public static final double a2 = -100.04613, b2 = 804.30749, c2 = 357.66532;
-    private static final KalmanFilter velKalman = new KalmanFilter(
+    public static double x0 = 0, p0 = 1, q = 0, r = 400;
+    private static KalmanFilter velKalman = new KalmanFilter(
             0.0,   // x0
             400.0, // p0
             2000.0,// q (process noise)  -> tune
@@ -48,6 +49,15 @@ public class Shooter {
     public PIDController veloController = new PIDController(vP,vI,vD);
     //  public static double vP=5,vI=0,vD=0.1,fS=200,fV=1.5,fA=0;
     public static double vP=5.3,vI=0,vD=0.1,fS=200,fV=1.68,fA=0;
+    public static void setKalmanCoefs(){
+        velKalman = new KalmanFilter(
+                x0,   // x0
+                p0, // p0
+                q,// q (process noise)  -> tune
+                r
+        );
+    }
+
     public static void setCoefs(){
         motor1.setVeloCoefficients(vP,vI,vD);
         motor1.setFeedforwardCoefficients(fS,fV,fA);
@@ -86,6 +96,7 @@ public class Shooter {
         }
     }
     public static double hoodPos;
+    public static double est;
     public static void update(){
         double distt= Turret.dist;
         hoodPos = Range.clip(a1 * Math.pow(distt, 2) + b1 * distt + c1, 0.58, 0.789);
@@ -93,7 +104,7 @@ public class Shooter {
         // DEFAULT getVelocity(): encoder ticks/sec
         double measTicksPerSec = motor1.getVelocity();
 
-        double est = (dtSeconds > 0.0)
+        est = (dtSeconds > 0.0)
                 ? velKalman.update(measTicksPerSec, dtSeconds)
                 : velKalman.update(measTicksPerSec);
 
