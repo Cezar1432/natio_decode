@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystem.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Spindexer;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Turret;
+import org.firstinspires.ftc.teamcode.tasks.seasonal_tasks.Shoot;
 import org.firstinspires.ftc.teamcode.tasks.seasonal_tasks.ShootForta;
 import org.firstinspires.ftc.teamcode.tasks.seasonal_tasks.Spit;
 import org.firstinspires.ftc.teamcode.tuning.MotorExTest;
@@ -67,16 +68,9 @@ public abstract class TeleOp extends BetterOpMode {
                 .whenPressed(Spit::new, BetterGamepad.Type.PARALLEL);
 
         gamepadEx1.getButton(BetterGamepad.Buttons.RIGHT_BUMPER)
-                .whenPressed(ShootForta::new, BetterGamepad.Type.PARALLEL);
+                    .whenPressed(Shoot::new, BetterGamepad.Type.PARALLEL);
         gamepadEx1.getButton(BetterGamepad.Buttons.CIRCLE)
                 .whenPressed(Spindexer::clearAll, BetterGamepad.Type.PARALLEL);
-        gamepadEx1.getButton(BetterGamepad.Buttons.DPAD_LEFT)
-                .whenPressed(() -> {
-                    if( !sorting )
-                        sorting = true;
-                    else
-                        sorting = false;
-                }, BetterGamepad.Type.PARALLEL);
         gamepadEx1.getButton(BetterGamepad.Buttons.DPAD_DOWN)
                 .whenPressed(Shooter::setKalmanCoefs, BetterGamepad.Type.PARALLEL);
     }
@@ -96,18 +90,23 @@ public abstract class TeleOp extends BetterOpMode {
         Shooter.servo.setPosition(Shooter.servo.getPosition() + 0.0025 *
                 ((gamepadEx1.getDouble(BetterGamepad.Trigger.RIGHT_TRIGGER) - gamepadEx1.getDouble(BetterGamepad.Trigger.LEFT_TRIGGER))));
         //Turret.setNeutralPosition(0.5);
-       Shooter.setVelocity(MotorExTest.VELOCITY);
+        //Shooter.setVelocity(MotorExTest.VELOCITY);
         robot.update();
         telemetry.update();
         drive.update();
         Spindexer.update();
+        Shooter.update();
         Turret.update();
         gamepadEx1.update();
         telemetry.addData("dist", Turret.dist);
         telemetry.addData("hood", Shooter.servo.getPosition());
-        telemetry.addData("velocity", Shooter.motor1.getVelocity());
-        telemetry.addData("kalman estimate", Shooter.est);
-        telemetry.addData("corrected vel", Shooter.motor1.getCorrectedVelocity());
+        telemetry.addData("velocity", Shooter.motor1.getVelocity());;
+        telemetry.addData("RAW", Shooter.motor1.getVelocity());
+        telemetry.addData("FILTERED", Shooter.est);
+        telemetry.addData("TARGET", Shooter.targetVelTicksPerSec);
+        telemetry.addData("Target Vel", Shooter.targetVelTicksPerSec);
+        telemetry.addData("Error (target - est)", Shooter.targetVelTicksPerSec - Shooter.est);
+        telemetry.addData("Est. Velocity Drop", Shooter.estimatedVelocityDrop);
 
         if( sorting )
             telemetry.addData("distance to ball", Spindexer.dist);

@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.Robot;
+import org.firstinspires.ftc.teamcode.tuning.MotorExTest;
 import org.firstinspires.ftc.teamcode.util.math.KalmanFilter;
 import org.firstinspires.ftc.teamcode.util.math.PIDController;
 import org.firstinspires.ftc.teamcode.util.wrappers.BetterMotorEx;
@@ -25,17 +26,17 @@ public class Shooter {
 
     public static final double a1 = -0.0641147, b1 = 0.390703, c1 = 0.18375;
     public static final double a2 = -100.04613, b2 = 804.30749, c2 = 357.66532;
-    public static double x0 = 0, p0 = 1, q = 0, r = 400;
-    private static KalmanFilter velKalman = new KalmanFilter(
+    public static double x0 = 0, p0 = 0.88, q = 1500, r = 4900;
+    public static KalmanFilter velKalman = new KalmanFilter(
             0.0,   // x0
-            400.0, // p0
-            2000.0,// q (process noise)  -> tune
-            8000.0 // r (measurement noise)-> tune
+            p0, // p0
+            q,// q (process noise)  -> tune
+            r // r (measurement noise)-> tune
     );
     public static double shotExpectedDropTicksPerSec = 100.0; // tune
-    public static double compensationGain = 1.0;              // error -> boost
+    public static double compensationGain = 1.5;              // error -> boost
     public static double compensationMaxTicksPerSec = 600.0;  // cap boost
-    public static double recoveryDeadbandTicksPerSec = 30.0;
+    public static double recoveryDeadbandTicksPerSec = 40;
     public static double dtSeconds = 0.2; // optional
     public static double p= 4,i,d,f = 20;
 
@@ -64,9 +65,9 @@ public class Shooter {
         motor2.setVeloCoefficients(vP,vI,vD);
         motor2.setFeedforwardCoefficients(fS,fV,fA);
     }
-    public static double estimatedVelocityDrop= 150;
+    public static double estimatedVelocityDrop= 120;
     public static void onShot(){
-        velKalman.applyImpulse(- estimatedVelocityDrop);
+        velKalman.applyImpulse(-estimatedVelocityDrop);
     }
 
     public static double power= 1;
@@ -97,10 +98,12 @@ public class Shooter {
     }
     public static double hoodPos;
     public static double est;
+    public static double boost;
     public static void update(){
         double distt= Turret.dist;
-        hoodPos = Range.clip(a1 * Math.pow(distt, 2) + b1 * distt + c1, 0.58, 0.789);
-        targetVelTicksPerSec = -Math.pow(distt,2)*a2+b2*distt+c2;
+        //hoodPos = Range.clip(a1 * Math.pow(distt, 2) + b1 * distt + c1, 0.58, 0.789);
+        //targetVelTicksPerSec = -Math.pow(distt,2)*a2+b2*distt+c2;
+        targetVelTicksPerSec = MotorExTest.VELOCITY;
         // DEFAULT getVelocity(): encoder ticks/sec
         double measTicksPerSec = motor1.getVelocity();
 
@@ -110,15 +113,14 @@ public class Shooter {
 
         double err = targetVelTicksPerSec - est;
 
-        double boost = 0.0;
+        boost = 0.0;
         if (Math.abs(err) > recoveryDeadbandTicksPerSec) {
             boost = compensationGain * err;
             boost = Range.clip(boost, -compensationMaxTicksPerSec, compensationMaxTicksPerSec);
         }
 
         double cmd = Math.max(0.0, targetVelTicksPerSec + boost);
-        motor1.setVelocity(cmd);
-        motor2.setVelocity(cmd);// ticks/sec
+        setVelocity(cmd);// ticks/sec
       //  servo.setPosition(hoodPos);
     }
 }

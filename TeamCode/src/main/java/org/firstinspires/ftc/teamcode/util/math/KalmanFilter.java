@@ -49,10 +49,10 @@ public class KalmanFilter {
 
         return x;
     }
-
+    public static double uncertaintyFactor = 1.2;
     public void applyImpulse(double delta) {
         x += delta;
-        p *= 1.10;
+        p *= uncertaintyFactor;
     }
 
     public double getX() { return x; }
