@@ -42,10 +42,11 @@ public class BetterMotorEx extends DcMotorImplEx implements DcMotorEx, HardwareD
         time= new ElapsedTime();
 
 
-    }public BetterMotorEx(DcMotorController controller, int portNumber) {
+    }
+    public BetterMotorEx(DcMotorController controller, int portNumber) {
         super(controller, portNumber);
 
-        time= new ElapsedTime();//aaa
+        time= new ElapsedTime();
 
     }
 
@@ -61,14 +62,14 @@ public class BetterMotorEx extends DcMotorImplEx implements DcMotorEx, HardwareD
     }
 
 
-    double maxVelocity= 0;
+    public double maxVelocity= 0;
     public BetterMotorEx setMaxVelocity(double maxVelocity){
         this.maxVelocity= maxVelocity;
         return this;
     }
     PDSFController controller;
     public double f;
-    double targetVelocity= 0;
+    public double targetVelocity= 0;
     public BetterMotorEx setPFCoefficients(double p, double f){
         controller= new PDSFController(p, 0, 0, 0);
         this.f= f;
@@ -92,16 +93,14 @@ public class BetterMotorEx extends DcMotorImplEx implements DcMotorEx, HardwareD
         runMode= RunMode.RUN;
     }
 
-
-
     private double lastPower= 0;
+    public double output;
 
     public void update(){
         double velocity= super.getVelocity();
-        double output= targetVelocity/ maxVelocity * f + controller.calculate(0,velocity- targetVelocity);
+         output= targetVelocity/ maxVelocity * f - controller.calculate(0,velocity- targetVelocity);
         super.setPower(output);
     }
-
 
 
     public void resetEncoder(){

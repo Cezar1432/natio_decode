@@ -13,10 +13,11 @@ public class Shoot implements Task {
         command= new Command()
                 .addTask(Intake::start)
                 .addTask(Spindexer::shootRandom)
-                .waitSeconds(2 * Shooter.dtSeconds)
-                .addTask(Shooter::onShot)
-                .waitSeconds(Shooter.dtSeconds)
-                .addTask(Shooter::onShot)
+//                .waitSeconds(2 * Shooter.dtSeconds)
+//                .addTask(Shooter::onShot)
+//                .waitSeconds(Shooter.dtSeconds)
+//                .addTask(Shooter::onShot)
+                .waitSeconds(2)
                 .addTask(Spindexer::turnBack);
     }
     @Override

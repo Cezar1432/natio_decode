@@ -22,7 +22,7 @@ public class Shooter {
 
     public static BetterMotorEx motor1, motor2;
     //public static MotorEx motor1,motor2;
-    public static BetterServo servo;
+    public static BetterServo servo,SE;
 
     public static final double a1 = -0.0641147, b1 = 0.390703, c1 = 0.18375;
     public static final double a2 = -100.04613, b2 = 804.30749, c2 = 357.66532;
@@ -38,10 +38,7 @@ public class Shooter {
     public static double compensationMaxTicksPerSec = 600.0;  // cap boost
     public static double recoveryDeadbandTicksPerSec = 40;
     public static double dtSeconds = 0.2; // optional
-    public static double p= 10,i,d,f = 1;
-
-    public static double vel;
-
+    public static double p= 0.002,i,d,f = 1;
 
     public static double targetVelTicksPerSec = 0.0;
     static PIDFCoefficients shootercoeffs = new PIDFCoefficients(p, i, d, f);
@@ -71,14 +68,15 @@ public class Shooter {
     public static double power= 1;
 
     public static double voltageThreshold = 10.1;
-    public static void setVelocity(double vel){
-            //setCoefs();
-            double voltage = Robot.voltageSensor.getVoltage();
-            double coeff = (voltage < voltageThreshold) ? voltageThreshold / voltage : 1;
-            vel *= coeff;
-            motor1.setVelocity(vel);
-            motor2.setPower(motor1.getPower());
-    }
+        public static void setVelocity(double vel){
+                double voltage = Robot.voltageSensor.getVoltage();
+                double coeff = (voltage < voltageThreshold) ? voltageThreshold / voltage : 1;
+                vel *= coeff;
+                motor1.setVelocity(vel);
+                motor2.setVelocity(vel);
+//                motor2.setPower(motor1.getPower());
+
+        }
     public static boolean wereCoeffsSet = false;
     public static void setVelocity2(double vel){
         if(!wereCoeffsSet)
@@ -118,7 +116,7 @@ public class Shooter {
         }
 
         double cmd = Math.max(0.0, targetVelTicksPerSec + boost);
-        setVelocity(cmd);// ticks/sec
+       // setVelocity(cmd);// ticks/sec
       //servo.setPosition(hoodPos);
     }
 }

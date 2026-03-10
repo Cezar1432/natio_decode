@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannelController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PwmControl;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -52,7 +53,7 @@ public class Robot {
     public DcMotorController controlHubMotors, expansionHubMotors;
     public ServoController controlHubServos, expansionHubServos;
     public BetterServo indexer1, indexer2;
-    public BetterServo hood;
+    public BetterServo hood,hood2;
 
     public BreakBeam breakBeam;
 
@@ -101,24 +102,15 @@ public class Robot {
 
         intake= new BetterMotorEx(expansionHubMotors, 0);
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        shooter= hm.get(BetterMotorEx.class, "shooter");
-//        shooter2= hm.get(BetterMotorEx.class, "shooter2");
-        //   shooter = new BetterMotorEx(expansionHubMotors, 2);
-        //  shooter2 = new BetterMotorEx(expansionHubMotors, 3);
-       shooter= new BetterMotorEx(expansionHubMotors, 1).setCachingTolerance(.02)
-               .setMaxVelocity(1700)
+        shooter= new BetterMotorEx(expansionHubMotors, 1).setCachingTolerance(.02)
+               .setMaxVelocity(1600)
                .setPFCoefficients(Shooter.p, Shooter.f);
         shooter2= new BetterMotorEx(expansionHubMotors, 2).setCachingTolerance(.02)
-                .setMaxVelocity(1700)
+                .setMaxVelocity(1600)
                 .setPFCoefficients(Shooter.p, Shooter.f);
-        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
-
-
-        // shooter2 = new BetterMotorEx(expansionHubMotors, 3);
-//        shooter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+        shooter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooter2.setDirection(DcMotorSimple.Direction.REVERSE);
 
     }
     private void assignHardware(){
@@ -136,7 +128,6 @@ public class Robot {
     }
 
     public void initializeServos(){
-        //TODO sa puneti porturile bune
         turret1= new BetterServoEx(expansionHubServos, 3);
         turret2= new BetterServoEx(expansionHubServos, 4);
         turret1.setPwmRange(new PwmControl.PwmRange(500, 2500));

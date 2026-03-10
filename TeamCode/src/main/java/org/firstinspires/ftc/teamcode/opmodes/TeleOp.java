@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import static org.firstinspires.ftc.teamcode.robot.subsystem.Spindexer.currentSlot;
 import static org.firstinspires.ftc.teamcode.robot.subsystem.Spindexer.sorting;
+import static org.firstinspires.ftc.teamcode.tuning.MotorExTest.VELOCITY;
 
 import com.bylazar.telemetry.PanelsTelemetry;
 
@@ -75,6 +76,9 @@ public abstract class TeleOp extends BetterOpMode {
                 .whenPressed(Spindexer::clearAll, BetterGamepad.Type.PARALLEL);
         gamepadEx1.getButton(BetterGamepad.Buttons.DPAD_DOWN)
                 .whenPressed(Shooter::setKalmanCoefs, BetterGamepad.Type.PARALLEL);
+        gamepadEx1.getButton(BetterGamepad.Buttons.DPAD_LEFT)
+                .whenPressed(Shooter::setCoefs, BetterGamepad.Type.PARALLEL);
+
         telemetry.setMsTransmissionInterval(500);
 
     }
@@ -92,41 +96,29 @@ public abstract class TeleOp extends BetterOpMode {
     long now, last, dt;
     @Override
     public void active_loop() {
-      now = System.nanoTime();
-      dt= now- last;
-      telemetry.addData("hz", 1e9/dt);
-      last= now;
+        now = System.nanoTime();
+        dt = now - last;
+        telemetry.addData("hz", 1e9 / dt);
+        last = now;
         Shooter.servo.setPosition(Shooter.servo.getPosition() + 0.0025 *
                 ((gamepadEx1.getDouble(BetterGamepad.Trigger.RIGHT_TRIGGER) - gamepadEx1.getDouble(BetterGamepad.Trigger.LEFT_TRIGGER))));
-        Turret.setNeutralPosition(0.5);
-
-        Shooter.setVelocity(MotorExTest.VELOCITY);
+       //Shooter.setVelocity(VELOCITY);
+       Shooter.motor1.setPower(VELOCITY);
+       Shooter.motor2.setPower(VELOCITY);
+       // Shooter.motor1.update();
+       // Shooter.motor2.update();
         robot.update();
         telemetry.update();
         drive.update();
         Spindexer.update();
-       // Shooter.update();
-//        Turret.update();
-        gamepadEx1.update();
+        // Shooter.update();
+         Turret.update();
+        //gamepadEx1.update();
 
-//        telemetry.addData("dist", Turret.dist);
-//        telemetry.addData("hood", Shooter.servo.getPosition());
+        telemetry.addData("dist", Turret.dist);
+        telemetry.addData("hood", Shooter.servo.getPosition());
         telemetry.addData("velocity1", Shooter.motor1.getVelocity());
-//        telemetry.addData("velocity2", Shooter.motor2.getVelocity());
-//        telemetry.addData("Corrected Velocity",Shooter.motor1.getCorrectedVelocity());
-//        telemetry.addData("Corrected Velocity2",Shooter.motor2.getCorrectedVelocity());
-//        telemetry.addData("RAW", Shooter.motor1.getVelocity());
-//        telemetry.addData("FILTERED", Shooter.est);
-//        telemetry.addData("TARGET", Shooter.targetVelTicksPerSec);
-//        telemetry.addData("Target Vel", Shooter.targetVelTicksPerSec);
-//        telemetry.addData("Error (target - est)", Shooter.targetVelTicksPerSec - Shooter.est);
-//        telemetry.addData("Est. Velocity Drop", Shooter.estimatedVelocityDrop);
-//        telemetry.addData("spindexer pos", Spindexer.s1.getPosition());
-//        if( currentSlot.getFrontPose() != Spindexer.s1.getPosition() )
-//            telemetry.addData("se pierd pozitiile", 1);
-//
-//        if( sorting )
-//            telemetry.addData("distance to ball", Spindexer.dist);
+        telemetry.addData("velocity2", Shooter.motor2.getVelocity());
     }
 
     @Override
