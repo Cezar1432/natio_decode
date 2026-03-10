@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorControllerEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannelController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PwmControl;
@@ -47,7 +48,7 @@ public class Robot {
     DcMotorControllerEx exExpansionHubMotors;
     public volatile BetterMotor turret;
     public BetterMotorEx intake;
-    public MotorEx shooter, shooter2;
+    public BetterMotorEx shooter, shooter2;
     public DcMotorController controlHubMotors, expansionHubMotors;
     public ServoController controlHubServos, expansionHubServos;
     public BetterServo indexer1, indexer2;
@@ -104,17 +105,14 @@ public class Robot {
 //        shooter2= hm.get(BetterMotorEx.class, "shooter2");
         //   shooter = new BetterMotorEx(expansionHubMotors, 2);
         //  shooter2 = new BetterMotorEx(expansionHubMotors, 3);
-        shooter2 = new MotorEx(hm,"shooter2", Motor.GoBILDA.BARE).setCachingTolerance(0.01).setInverted(true);
-        shooter2.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        shooter2.setRunMode(Motor.RunMode.VelocityControl);
-        shooter2.ACHIEVABLE_MAX_TICKS_PER_SECOND = 1900;
-        shooter2.encoder.setDirection(Motor.Direction.FORWARD);
+       shooter= new BetterMotorEx(expansionHubMotors, 1).setCachingTolerance(.02)
+               .setMaxVelocity(1700)
+               .setPFCoefficients(Shooter.p, Shooter.f);
+        shooter2= new BetterMotorEx(expansionHubMotors, 2).setCachingTolerance(.02)
+                .setMaxVelocity(1700)
+                .setPFCoefficients(Shooter.p, Shooter.f);
+        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        shooter = new MotorEx(hm,"shooter", Motor.GoBILDA.BARE).setCachingTolerance(0.01).setInverted(false);
-        shooter.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        shooter.setRunMode(Motor.RunMode.VelocityControl);
-        shooter.ACHIEVABLE_MAX_TICKS_PER_SECOND = 1900;
-        shooter.encoder.setDirection(Motor.Direction.FORWARD);
 
         // shooter2 = new BetterMotorEx(expansionHubMotors, 3);
 //        shooter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

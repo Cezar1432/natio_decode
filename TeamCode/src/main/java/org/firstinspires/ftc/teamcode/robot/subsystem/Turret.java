@@ -47,8 +47,8 @@ public class Turret {
             turretRelative+= 180;
             double finalPos= turretRelative/360;
             if(finalPos>= 0.05 && finalPos<=0.95) {
-                turret1.setPosition(finalPos);
-                turret2.setPosition(finalPos);
+                turret1.setPosition(0.5);
+                turret2.setPosition(0.5);
             }
 
 

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorControllerEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.configuration.annotations.DeviceProperties;
 import com.qualcomm.robotcore.hardware.configuration.annotations.MotorType;
@@ -47,6 +48,8 @@ public class BetterMotorEx extends DcMotorImplEx implements DcMotorEx, HardwareD
         time= new ElapsedTime();//aaa
 
     }
+
+
     double cachingTolerance= 0;
     public BetterMotorEx setCachingTolerance(double tolerance){
         this.cachingTolerance= tolerance;
@@ -58,6 +61,24 @@ public class BetterMotorEx extends DcMotorImplEx implements DcMotorEx, HardwareD
     }
 
 
+    double maxVelocity= 0;
+    public BetterMotorEx setMaxVelocity(double maxVelocity){
+        this.maxVelocity= maxVelocity;
+        return this;
+    }
+    PDSFController controller;
+    public double f;
+    double targetVelocity= 0;
+    public BetterMotorEx setPFCoefficients(double p, double f){
+        controller= new PDSFController(p, 0, 0, 0);
+        this.f= f;
+        return this;
+    }
+    public void setVelocity(double targetVelocity){
+        runMode= RunMode.VELOCITY_PID;
+        this.targetVelocity= targetVelocity;
+
+    }
     public enum RunMode{
         RUN, PID, VELOCITY_PID
     }
@@ -70,14 +91,15 @@ public class BetterMotorEx extends DcMotorImplEx implements DcMotorEx, HardwareD
         lastPower= 0;
         runMode= RunMode.RUN;
     }
+
+
+
     private double lastPower= 0;
-    PIDFController controller;
-    double maxVelocity;
-    public void set(double output){
-        if(runMode.equals(RunMode.VELOCITY_PID)){
-            double power= output + controller.calculate(getVelocity(), output * maxVelocity);
-            this.setPower(power);
-        }
+
+    public void update(){
+        double velocity= super.getVelocity();
+        double output= targetVelocity/ maxVelocity * f + controller.calculate(0,velocity- targetVelocity);
+        super.setPower(output);
     }
 
 
