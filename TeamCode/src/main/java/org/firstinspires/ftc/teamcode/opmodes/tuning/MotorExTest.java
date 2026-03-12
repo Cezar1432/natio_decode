@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.tuning;
+package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 
 import com.bylazar.configurables.annotations.Configurable;
@@ -36,8 +36,9 @@ public class MotorExTest extends LinearOpMode {
                 Shooter.setCoefs();
             }
             hubs.forEach(LynxModule::clearBulkCache);
-            Shooter.motor1.setVelocity(VELOCITY);
-            Shooter.motor2.setVelocity(VELOCITY);
+//            Shooter.motor1.setVelocity(VELOCITY);
+//            Shooter.motor2.setVelocity(VELOCITY);
+            Shooter.setVelocity(VELOCITY);
             r.update();
             telemetry.update();
             Shooter.motor1.update();

@@ -13,6 +13,9 @@ public class Colors {
 
     public enum Balls{
 
+//        PURPLE(new Color(180, 0, 180), "Purple")
+//        ,
+//        GREEN(new Color(0, 255, 0), "Green")
         PURPLE(new Color(180, 0, 180), "Purple")
         ,
         GREEN(new Color(0, 255, 0), "Green")
@@ -43,8 +46,8 @@ public class Colors {
         Balls finalColor= Balls.NONE;
         double diff= Double.POSITIVE_INFINITY;
         for(Balls b: Balls.values()){
-            if(b.equals(Balls.NONE))
-                continue;
+           if(b.equals(Balls.NONE))
+              continue;
             double locDiff= getColorDistance(b.color, c);
             if(locDiff< diff){
                 diff= locDiff;

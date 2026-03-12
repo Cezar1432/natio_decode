@@ -42,6 +42,20 @@ public class Scheduler {
         list.addLast(task);
 
     }
+    public static void schedule(Task... t){
+        for(Task task: t){
+            list.addLast(task);
+        }
+    }
+    public static void schedule(InstantTask... t){
+        for(InstantTask task: t){
+            Task tasknormal= ()->{
+                task.run();
+                return true;
+            };
+            list.addLast(tasknormal);
+        }
+    }
     public static void inParallel(Task t){
         LinkedList<Task> parallel = new LinkedList<>();
         parallel.addLast(t);

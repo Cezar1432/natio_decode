@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.util.wrappers.colorsensor.Colors.*;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchSimple;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.configuration.annotations.DeviceProperties;
 import com.qualcomm.robotcore.hardware.configuration.annotations.I2cDeviceType;
 
@@ -42,9 +43,19 @@ public class BetterColorSensor extends RevColorSensorV3 implements HardwareDevic
         return getDistance(DistanceUnit.CM);
     }
 
-    public Balls getColorSeenBySensor(){
-         Color output = new Color(this.red(), this.green(), this.blue());
-        return getColor(output);
+//    public Balls getColorSeenBySensor(){
+//
+//    }
+    public Balls getColorSeenBySensor2(){
+        int red = this.red(),blue = this.blue(),green = this.green();
+       double max = Math.max(red,Math.max(blue,green));
+        if(max>500)
+        {
+            if(green>blue){ return Balls.GREEN;
+            }
+            if(blue>green) return Balls.PURPLE;
+        }
+        return Balls.NONE;
     }
 
 }

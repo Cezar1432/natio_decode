@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.tasks.command_based.core.Task;
 public class ShootForta implements Task {
     private Command s;
 
-    public static double  velocityThreshold = 300,coef = 1.7, increment= -0.015, waitTime= 0.28, waitTime2= 0.13;
+    public static double  velocityThreshold = 300,coef = 2, increment= -0.013 , waitTime= 0.23, waitTime2= 0.12;
 
 
     public double pos;
@@ -23,7 +23,6 @@ public class ShootForta implements Task {
                     Intake.start();
                     pos = Shooter.servo.getPosition();
                 })
-                .addTask(()->Math.abs(Math.abs(Shooter.motor1.getVelocity())- Math.abs(Shooter.motor1.getVelocity()))< velocityThreshold)
                 .addTask(Spindexer::shootRandom)
                 .waitSeconds(waitTime)
                 .addTask(()->Shooter.servo.setPosition(pos+increment))

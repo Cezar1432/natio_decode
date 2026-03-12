@@ -16,6 +16,7 @@ public class Turret {
     public static double x, y, heading, xCorner, yCorner, dist, fieldRelative, robotRelative, turretRelative;
     public static final double FIELD_LENGTH= 3.65, launchTime= .2,goalCircleRasius= .18;
     public static BetterServoEx turret1, turret2;
+    public static boolean reseted = false;
 
     public static void setNeutralPosition(double pos){
         turret1.setPosition(pos);
@@ -47,9 +48,16 @@ public class Turret {
             turretRelative+= 180;
             double finalPos= turretRelative/360;
             if(finalPos>= 0.05 && finalPos<=0.95) {
-                turret1.setPosition(0.5);
-                turret2.setPosition(0.5);
+                if(reseted) {
+                    turret1.setPosition(finalPos);
+                    turret2.setPosition(finalPos);
+                }
+                else{
+                    turret1.setPosition(0.5);
+                    turret2.setPosition(0.5);
+                }
             }
+
 
 
         }

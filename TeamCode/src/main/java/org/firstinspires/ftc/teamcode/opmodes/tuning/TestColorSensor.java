@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.tuning;
+package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
 import static org.firstinspires.ftc.teamcode.robot.subsystem.Spindexer.shootPurple;
 
@@ -59,7 +59,7 @@ public class TestColorSensor extends BetterOpMode {
             telemetry.addData("color dist to green", Colors.getColorDistance(currentColor, verde));
             //distanceToPurple = Colors.getColorDistance()
             telemetry.addData("rosu", red);
-            telemetry.addData("current color", Spindexer.colorSensor.getColorSeenBySensor());
+     //       telemetry.addData("current color", Spindexer.colorSensor.getColorSeenBySensor());
             telemetry.addData( "albastru", blue);
             telemetry.addData("verde", green);
         } else {

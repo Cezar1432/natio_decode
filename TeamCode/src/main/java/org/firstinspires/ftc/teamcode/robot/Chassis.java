@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 import com.arcrobotics.ftclib.controller.PIDFController;
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.Vector;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -8,11 +9,14 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.teamcode.pedropathing.MySwerve;
 import org.firstinspires.ftc.teamcode.pedropathing.PedroConstants;
+import org.firstinspires.ftc.teamcode.util.math.MathStuff;
 import org.firstinspires.ftc.teamcode.util.math.SlewRateLimiter;
 
 import java.util.function.DoubleSupplier;
 
+@Configurable
 public class Chassis {
+
 
     public MySwerve swerve;
     SlewRateLimiter forward, strafe, rot;
@@ -43,22 +47,25 @@ public class Chassis {
         return this;
     }
 
-    double lastAngle= 0;
+    public double lastAngle= 0, err;
     public void update(){
         Vector inputs= new Vector(new Pose(strafe.calculate(leftStickX.getAsDouble()), forward.calculate(leftStickY.getAsDouble())));
         if(robotCentric){
             inputs.rotateVector(-Robot.robotPose.getHeading());
         }
         double rotation= rot.calculate(rightStickX.getAsDouble());
-        if(Math.abs(rotation)> 1e-2 && usingHeadingPIDF) {
-            rotation = headingController.calculate(lastAngle, Robot.robotPose.getHeading());
+        if(Math.abs(rotation)< 1e-2 && usingHeadingPIDF) {
+            if(Math.abs(lastAngle- Robot.robotPose.getHeading())> Math.toRadians(30)) {
+                err = MathStuff.normalizeRadians(MathStuff.normalizeRadians(Robot.robotPose.getHeading()) - MathStuff.normalizeRadians(lastAngle));
+                rotation = -headingController.calculate(0, err);
+            }
         }
         else{
             lastAngle=Robot.robotPose.getHeading();
         }
         swerve.arcadeDrive(inputs.getXComponent(), inputs.getYComponent(), rotation);
     }
-    PIDFController headingController;
+    public static PIDFController headingController;
     boolean usingHeadingPIDF= false;
     public Chassis setHeadingPIDF(PIDFCoefficients coefs){
         usingHeadingPIDF= true;

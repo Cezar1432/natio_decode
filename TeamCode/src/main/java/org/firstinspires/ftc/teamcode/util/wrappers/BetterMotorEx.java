@@ -98,7 +98,8 @@ public class BetterMotorEx extends DcMotorImplEx implements DcMotorEx, HardwareD
 
     public void update(){
         double velocity= super.getVelocity();
-         output= targetVelocity/ maxVelocity * f - controller.calculate(0,velocity- targetVelocity);
+        //output= targetVelocity/ maxVelocity * f + controller.calculate(0,Math.abs(velocity)- targetVelocity);
+        output= targetVelocity/ maxVelocity * f + controller.calculate(velocity,-targetVelocity);
         super.setPower(output);
     }
 

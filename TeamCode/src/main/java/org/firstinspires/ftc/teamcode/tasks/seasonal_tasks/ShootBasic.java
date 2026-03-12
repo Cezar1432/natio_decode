@@ -1,34 +1,29 @@
 package org.firstinspires.ftc.teamcode.tasks.seasonal_tasks;
 
-import com.qualcomm.robotcore.util.Range;
-
 import org.firstinspires.ftc.teamcode.robot.subsystem.Intake;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Spindexer;
 import org.firstinspires.ftc.teamcode.tasks.command_based.core.Command;
 import org.firstinspires.ftc.teamcode.tasks.command_based.core.Task;
 
-public class Shoot implements Task {
+public class ShootBasic implements Task {
 
     Command command;
-    public Shoot(){
+    public ShootBasic(){
         command= new Command()
                 .addTask(()-> Shooter.shooting= true)
                 .addTask(Intake::start)
                 .addTask(Spindexer::shootRandom)
-                .waitSeconds(Shooter.dtSeconds)
-                .addTask(()->Shooter.servo.setPosition(Range.clip(Shooter.servo.getPosition()- Shooter.downPos, 0.1, 0.38)))
-                .waitSeconds(Shooter.dtSeconds)
-                .addTask(()->Shooter.servo.setPosition(Range.clip(Shooter.servo.getPosition()- Shooter.downPos, 0.1, 0.38)))
-                .waitSeconds(Shooter.dtSeconds)
-                .addTask(()->Shooter.servo.setPosition(Shooter.servo.getPosition()+2*Shooter.downPos))
+//                .waitSeconds(Shooter.dtSeconds)
+//                .addTask(()->Shooter.servo.setPosition(Shooter.servo.getPosition()- Shooter.downPos))
+//                .waitSeconds(Shooter.dtSeconds)
+//                .addTask(()->Shooter.servo.setPosition(Shooter.servo.getPosition()- Shooter.downPos))
 //                .waitSeconds(2 * Shooter.dtSeconds)
 //                .addTask(Shooter::onShot)
 //                .waitSeconds(Shooter.dtSeconds)
 //                .addTask(Shooter::onShot)
                 .waitSeconds(2)
                 .addTask(Spindexer::turnBack)
-                .addTask(()-> Spindexer.clear())
                 .addTask(()-> Shooter.shooting= false);
 
     }
